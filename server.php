@@ -35,8 +35,8 @@
 			mysqli_query($db, $query);
 
 			$_SESSION['username'] = $username;
-			$_SESSION['success'] = "You are now logged in";
-			header('location: index.php');
+			$_SESSION['success'] = "You are now Registed, please leave a message for GW Staff for assigning your role";
+			header('location: contactStaff.php');
 		}
 
 	}
@@ -62,20 +62,20 @@
 			$results = mysqli_query($db, $query);
 			$row = mysqli_fetch_assoc($results);
 
-			if ($results == true) {
-				$_SESSION['username'] = $username;
-				$_SESSION['user_role'] = $row['user_role'];
-				$_SESSION['success'] = "You are now logged in";
-				if ($_SESSION['user_role'] == 'student') {
-					header('location: student.php');
-				}elseif ($_SESSION['user_role'] == 'tutor') {
-					header('location: tutor.php');
-				}elseif ($_SESSION['user_role'] == 'staff') {
-					header('location: staffDashboard.php');
-				}else{
-					header('location: contactStaff.php');
-				}
+            if ($results == true) {
+                $_SESSION['username'] = $username;
+                $_SESSION['user_role'] = $row['user_role'];
+                $_SESSION['success'] = "You are now logged in";
 
+                if ($_SESSION['user_role'] == 'student') {
+                    header('location: student.php');
+                }elseif ($_SESSION['user_role'] == 'tutor') {
+                    header('location: tutor.php');
+                }elseif ($_SESSION['user_role'] == 'staff'){
+					header('location: staffDashboard.php');
+                }else{
+					header('location: contactStaff.php');
+                }
 			}else {
 				array_push($errors, "Wrong username/password combination");
 			}

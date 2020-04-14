@@ -1,3 +1,25 @@
+<?php
+    session_start();
+
+    if (!isset($_SESSION['username'])) {
+        $_SESSION['msg'] = "You must log in first";
+        header('location: login.php');
+        if ($_SESSION['user_role'] == 'tutor') {
+            $_SESSION['msg'] = "Unauthorized Access";
+            header('location: login.php');
+        }
+    }
+
+
+
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['username']);
+        header("location: login.php");
+    }
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -48,6 +70,58 @@
                 </button>
             </div>
         </nav>
+        <div class="container-fluid"  style="background-color: #1b4b72; padding: 30px 20px 30px 20px">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#schedule-form">Schedule</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#request-form">Request</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="schedule-form" class="container-fluid tab-pane active"><br>
+
+                    <form class="" action="">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <label>Setup Schedule</label>
+                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="form-group" style="margin-top: 10px">
+                                    <label for="title-schedule">Title</label>
+                                    <input class="form-control" id="comment">
+
+                                    <label for="description-schedule">Description</label>
+                                    <textarea class="form-control" id="description-schedule"></textarea>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div id="request-form" class="container tab-pane fade"><br>
+                    <form action="">
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="comment">Post Content</label>
+                            <textarea class="form-control" rows="5" id="comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
             <div class="row">
