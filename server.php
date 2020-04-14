@@ -35,8 +35,8 @@
 			mysqli_query($db, $query);
 
 			$_SESSION['username'] = $username;
-			$_SESSION['success'] = "You are now logged in";
-			header('location: index.php');
+			$_SESSION['success'] = "You are now Registed, please leave a message for GW Staff for assigning your role";
+			header('location: contactStaff.php');
 		}
 
 	}
@@ -70,8 +70,10 @@
 					header('location: student.php');
 				}elseif ($_SESSION['user_role'] == 'tutor') {
 					header('location: tutor.php');
-				}else{
+				}elseif ($_SESSION['user_role'] == ''){
 					header('location: contactStaff.php');
+				}else{
+					header('location: staffDashboard.php');
 				}
 
 			}else {
