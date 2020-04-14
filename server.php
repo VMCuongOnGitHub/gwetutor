@@ -70,6 +70,8 @@
 					header('location: student.php');
 				}elseif ($_SESSION['user_role'] == 'tutor') {
 					header('location: tutor.php');
+				}elseif ($_SESSION['user_role'] == 'staff') {
+					header('location: staffDashboard.php');
 				}else{
 					header('location: contactStaff.php');
 				}
