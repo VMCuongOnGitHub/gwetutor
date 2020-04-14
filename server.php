@@ -1,7 +1,10 @@
 <?php
-	session_start();
+	if(!isset($_SESSION))
+	{
+		session_start();
+	}
 
-	// variable declaration
+// variable declaration
 	$username = "";
 	$email    = "";
 	$errors = array();
@@ -72,7 +75,7 @@
                 }elseif ($_SESSION['user_role'] == 'tutor') {
                     header('location: tutor.php');
                 }elseif ($_SESSION['user_role'] == 'staff'){
-					header('location: staffDashboard.php');
+					header('location: staff/staffDashboard.php');
                 }else{
 					header('location: contactStaff.php');
                 }

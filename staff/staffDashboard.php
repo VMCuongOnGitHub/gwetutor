@@ -1,5 +1,8 @@
 <?php
-    session_start();
+    if(!isset($_SESSION))
+    {
+        session_start();
+    }
 
     if (!isset($_SESSION['username'])) {
         $_SESSION['msg'] = "You must log in first";
@@ -25,7 +28,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/staffDashboard.css">
+  <link rel="stylesheet" href="../css/staffDashboard.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
   <script src="https://kit.fontawesome.com/96bd6ee534.js" crossorigin="anonymous"></script>
