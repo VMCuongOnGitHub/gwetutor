@@ -1,5 +1,22 @@
 <?php
     $db = mysqli_connect('localhost', 'root', '', 'etutor');
+    if (isset($_GET['id'])) {
+      echo $_GET['id'];
+      if (isset($_POST['radioRole'])) {
+          $selectTutors = "SELECT * FROM tutors WHERE userID='{$_POST['tutorname']}'";
+          $results = mysqli_query($db, $selectTutors);
+          $row = mysqli_fetch_assoc($results);
+
+          $updateUserRoleQuerry = "UPDATE users SET is_assigned_role='{$_POST['radioRole']}' WHERE userID='{$_GET['id']}'";
+          $insertNewStudentQuerry = "INSERT INTO students (studentID, userID, tutorID)";
+          $studentID = 'stu' . $_GET['id'];
+          $insertNewStudentQuerry .= "VALUES ({$studentID}, '{$_GET['id']}', '{$row['tutorID']}')";
+
+          mysqli_query($db, $updateUserRoleQuerry);
+          mysqli_query($db, $insertNewStudentQuerry);
+      }
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -27,15 +44,29 @@
         <div class="modal-dialog">
             <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div class="modal-body">
+              <form action="" method="post">
+                  <div class="form-group">
+                    <label for="radioRole">Select list (select one):</label>
+                    <input type="radio" name="radioRole" value="student">Student
+                    <input type="radio" name="radioRole" value="tutor">Tutor
+                  </div>
+                  <div class="form-group">
+                    <label for="sel1">Assign to a Tutor</label>
+                    <select class="form-control" name="tutorname">
+                      <?php
+                        $query = "SELECT * FROM users WHERE is_assigned_role='tutor'";
+                        $results = mysqli_query($db, $query);
 
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
+                        while($row = mysqli_fetch_assoc($results)) {
+                            echo "<option value='{$row['userID']}'>{$row['username']}</option>";
+                        }
+                      ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" name="submitAssign">Save</button>
+                  </div>
+              </form>
 
             </div>
         </div>
@@ -74,7 +105,7 @@
                         </thead>
                         <tbody>
                             <?php
-                                $query = "SELECT * FROM users WHERE is_assigned_role=0";
+                                $query = "SELECT * FROM users WHERE is_assigned_role='0'";
 
                                 $results = mysqli_query($db, $query);
                                 //$row = mysqli_fetch_assoc($results);
@@ -86,7 +117,7 @@
                                         <td>{$row['message_to_staff']}</td>
                                         <td>
                                             <button class='btn btn-primary' data-toggle='modal' data-target='#myModal1' data-formid='{$row['userID']}'>Assign</button>
-                                         </td>
+                                        </td>
                                     </tr>";
                                 }
                             ?>
@@ -106,10 +137,9 @@
                 //bootstrap way of retrieving data-* attributes
                 //data-formid in this case
                 var id = button.data('formid');
-                $.get('http://127.0.0.1/gwetutor/staff/newAssign.php?id='+id,
+                $.get('unassignedUser.php?id='+id,
                     function(data) {
                         $("#myModal1 .modal-body").html(data);
-                        //Resize the modal to the size of the loaded form.
                         $("#myModal1").modal("handleUpdate");
                     });
             });
