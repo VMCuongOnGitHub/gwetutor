@@ -7,7 +7,7 @@
     if (!isset($_SESSION['username'])) {
         $_SESSION['msg'] = "You must log in first";
         header('location: login.php');
-        if ($_SESSION['user_role'] == 'tutor') {
+        if ($_SESSION['user_role'] != 'tutor') {
             $_SESSION['msg'] = "Unauthorized Access";
             header('location: login.php');
         }

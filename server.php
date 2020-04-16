@@ -3,8 +3,18 @@
 	{
 		session_start();
 	}
+	function randomPassword() {
+		$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$pass = array();
+		$alphaLength = strlen($alphabet) - 1;
+		for ($i = 0; $i < 12; $i++) {
+			$n = rand(0, $alphaLength);
+			$pass[] = $alphabet[$n];
+		}
+		return implode($pass);
+	}
 
-// variable declaration
+	// variable declaration
 	$username = "";
 	$email    = "";
 	$errors = array();
@@ -16,6 +26,7 @@
 	// REGISTER USER
 	if (isset($_POST['reg_user'])) {
 		// receive all input values from the form
+		$userID = "gwu" . randomPassword();
 		$username = mysqli_real_escape_string($db, $_POST['username']);
 		$email = mysqli_real_escape_string($db, $_POST['email']);
 		$password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
@@ -33,13 +44,15 @@
 		// register user if there are no errors in the form
 		if (count($errors) == 0) {
 			$password = md5($password_1);//encrypt the password before saving in the database
-			$query = "INSERT INTO users (username, email, password)
-					  VALUES('$username', '$email', '$password')";
+			$query = "INSERT INTO users (userID, username, email, password, is_assigned_role)
+					  VALUES('$userID', '$username', '$email', '$password', 0)";
 			mysqli_query($db, $query);
 
 			$_SESSION['username'] = $username;
+			$_SESSION['userID'] = $userID;
+			$_SESSION['is_assigned_role'] = '';
 			$_SESSION['success'] = "You are now Registed, please leave a message for GW Staff for assigning your role";
-			header('location: contactStaff.php');
+			header('location: staff/contactStaff.php');
 		}
 
 	}
@@ -59,15 +72,18 @@
 		}
 
 		if (count($errors) == 0) {
-			//$password = md5($password);
+			$password = md5($password);
 			$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
 
 			$results = mysqli_query($db, $query);
 			$row = mysqli_fetch_assoc($results);
 
+
+
             if ($results == true) {
                 $_SESSION['username'] = $username;
-                $_SESSION['user_role'] = $row['user_role'];
+				$_SESSION['userID'] = $row['userID'];
+                $_SESSION['is_assigned_role'] = $row['is_assigned_role']==null?"":$row['is_assigned_role'];
                 $_SESSION['success'] = "You are now logged in";
 
                 if ($_SESSION['user_role'] == 'student') {
@@ -77,7 +93,11 @@
                 }elseif ($_SESSION['user_role'] == 'staff'){
 					header('location: staff/staffDashboard.php');
                 }else{
-					header('location: contactStaff.php');
+					if ($row['message_to_staff'] == ''){
+						header('location: staff/contactStaff.php');
+					}else{
+						header('location: staff/successfulMessage.php');
+					}
                 }
 			}else {
 				array_push($errors, "Wrong username/password combination");
