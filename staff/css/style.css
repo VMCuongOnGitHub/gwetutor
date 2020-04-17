@@ -272,7 +272,42 @@ span#inactive {
     font-family: 'Josefin Sans', sans-serif;
 }
 
-body{
-    background-color: #f3f5f9;
+
+
+
+
+
+
+
+.wrapper .main_content .info div{
+    margin-bottom: 20px;
+}
+.right-action-header{
+    height: 7vh;
+    background-color: grey;
+    width: 100%;
+    margin-bottom: 20px;
+}
+@media (min-width: 576px){
+    .col-sm-10{
+        max-width: 100% !important;
+    }
+}
+
+.form-inline{
+    margin-bottom: 10px;
+    margin-left: -15px;
+}
+
+.dropdown{
+    margin-right: 10px;
+}
+
+input.form-control.mr-sm-2 {
+    width: 37rem;
+}
+
+.activities span{
+    margin: 10px
 }
 

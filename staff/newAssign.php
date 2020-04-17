@@ -14,31 +14,67 @@
         header('location: login.php');
     }
 
+
     if (isset($_POST['radioRole'])) {
-        $selectTutors = "SELECT * FROM tutors WHERE userID='{$_POST['tutorname']}'";
-        $results = mysqli_query($db, $selectTutors);
-        $row = mysqli_fetch_assoc($results);
+        $updateUserRoleQuery = "UPDATE users SET is_assigned_role='{$_POST['radioRole']}', is_assigned_role_by='{$_SESSION['username']}' WHERE userID='{$_POST['id']}'";
 
-        $updateUserRoleQuerry = "UPDATE users SET is_assigned_role='{$_POST['radioRole']}' WHERE userID='{$_GET['id']}'";
-        $insertNewStudentQuerry = "INSERT INTO students (studentID, userID, tutorID)";
-        $studentID = 'stu' . {$_GET['id']};
-        $insertNewStudentQuerry .= "VALUES ({$studentID}, '{$_GET['id']}', '{$row['tutorID']}')";
+        echo $updateUserRoleQuery;
+        mysqli_query($db, $updateUserRoleQuery);
 
-        mysqli_query($db, $updateUserRoleQuerry);
-        mysqli_query($db, $insertNewStudentQuerry);
+        if ($_POST['radioRole'] == 'tutor'){
+            //echo $_POST['radioRole'] == 'tutor';
+            $insertNewTutorQuery = "INSERT INTO tutors (tutorID, userID)";
+            $tutorID = 'tutor' . $_POST['id'];
+            $insertNewTutorQuery .= "VALUES ('{$tutorID}', '{$_POST['id']}')";
+
+            mysqli_query($db, $insertNewTutorQuery);
+            header('location: unassignedUser.php');
+        }else{
+            $selectTutors = "SELECT * FROM tutors WHERE userID='{$_POST['tutorname']}'";
+            $results = mysqli_query($db, $selectTutors);
+            $row = mysqli_fetch_assoc($results);
+
+            $insertNewStudentQuery = "INSERT INTO students (studentID, userID, tutorID)";
+            $studentID = 'stu' . $_POST['id'];
+            $insertNewStudentQuery .= "VALUES ('{$studentID}', '{$_POST['id']}', '{$row['tutorID']}')";
+
+            mysqli_query($db, $insertNewStudentQuery);
+            header('location: unassignedUser.php');
+        }
     }
 
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<form action="" method="post">
-    <div class="form-group">
-      <label for="radioRole">Select list (select one):</label>
-      <input type="radio" name="radioRole" value="student">Student
-      <input type="radio" name="radioRole" value="tutor">Tutor
+    <title>GW E Tutor</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+    <!--        <link rel="stylesheet" type="text/css" href="css/style.css">-->
+    <!--        <link rel="stylesheet" type="text/css" href="css/staffDashboard.css">-->
+
+</head>
+<body>
+
+<form action="newAssign.php" method="post">
+    <input type="hidden" name="id" value="<?php echo $_GET['id']?>">
+    <div class="form-group" id="radioRoleDiv">
+      <label for="radioRole">Assign as</label>
+        <input type="radio" name="radioRole" value="tutor" required checked>Tutor
+      <input type="radio" name="radioRole" value="student" required>Student
     </div>
-    <div class="form-group">
-      <label for="sel1">Assign to a Tutor</label>
-      <select class="form-control" id="sel1" name="tutorname">
+    <div class="form-group" id="forStudent">
+      <label for="sel1">Assign Student to a Tutor</label>
+      <select class="form-control" id="sel1" name="tutorname" required>
         <?php
           $query = "SELECT * FROM users WHERE is_assigned_role='tutor'";
           $results = mysqli_query($db, $query);
@@ -53,3 +89,21 @@
       <button type="submit" name="submitAssign">Save</button>
     </div>
 </form>
+
+<script>
+    $(document).ready(function(){
+        $('#forStudent').hide();
+        $("#radioRoleDiv input").click(function() {
+            if ($('input[name="radioRole"]:checked').val() == "tutor"){
+                $('#forStudent').hide();
+            }
+
+            if ($('input[name="radioRole"]:checked').val() == "student"){
+                $('#forStudent').show();
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

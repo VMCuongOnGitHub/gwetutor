@@ -48,6 +48,53 @@ if (isset($_GET['logout'])) {
                         <li><a href="unassignedUser.php"><i class="fas fa-project-diagram"></i>Unassigned User</a></li>
                     </ul>
                 </div>
+                <div class="main_content">
+                    <div class="right-action col-sm-10">
+                        <div class="right-action-header">
+                        </div>
+
+                        <nav class="navbar navbar-light bg-light">
+                            <form class="form-inline">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search Tutor">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                        </nav>
+
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">TUTOR EMAIL</th>
+                                <th scope="col">HAS BEEN ASSIGN FOR <i class="fas fa-sort"></i></th>
+                                <th scope="col">IS ASSIGN TO <i class="fas fa-sort"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark@gmail.com</td>
+                                <td>Otto</td>
+                                <td>5</td>
+                                <td>ASSIGNED TO</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Mark@gmail.com</td>
+                                <td>Thornton</td>
+                                <td>10</td>
+                                <td>ASSIGNED TO</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>Mark@gmail.com</td>
+                                <td>the Bird</td>
+                                <td>10</td>
+                                <td>ASSIGNED TO</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

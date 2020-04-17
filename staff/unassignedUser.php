@@ -44,30 +44,6 @@
         <div class="modal-dialog">
             <div class="modal-content">
 
-              <form action="" method="post">
-                  <div class="form-group">
-                    <label for="radioRole">Select list (select one):</label>
-                    <input type="radio" name="radioRole" value="student">Student
-                    <input type="radio" name="radioRole" value="tutor">Tutor
-                  </div>
-                  <div class="form-group">
-                    <label for="sel1">Assign to a Tutor</label>
-                    <select class="form-control" name="tutorname">
-                      <?php
-                        $query = "SELECT * FROM users WHERE is_assigned_role='tutor'";
-                        $results = mysqli_query($db, $query);
-
-                        while($row = mysqli_fetch_assoc($results)) {
-                            echo "<option value='{$row['userID']}'>{$row['username']}</option>";
-                        }
-                      ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <button type="submit" name="submitAssign">Save</button>
-                  </div>
-              </form>
-
             </div>
         </div>
     </div>
@@ -137,9 +113,9 @@
                 //bootstrap way of retrieving data-* attributes
                 //data-formid in this case
                 var id = button.data('formid');
-                $.get('unassignedUser.php?id='+id,
+                $.get('newAssign.php?id='+id,
                     function(data) {
-                        $("#myModal1 .modal-body").html(data);
+                        $("#myModal1 .modal-content").html(data);
                         $("#myModal1").modal("handleUpdate");
                     });
             });
