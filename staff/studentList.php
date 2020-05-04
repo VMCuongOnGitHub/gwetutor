@@ -81,7 +81,7 @@
 
                                         echo "<tr>
                                                 <td>{$row['userID']}</td>
-                                                <td>{$row['username']}</td>
+                                                <td><a href='../studentDashboard.php?id={$row['userID']}&tutorid={$tutorIDCut}'>{$row['username']}</a></td>
                                                 <td>{$row['email']}</td>
                                                 <td>
                                                     <button class='btn btn-primary' data-toggle='modal' data-target='#myModal1' data-formid='{$row['userID']}'>{$rowSelectTutor['username']}</button>

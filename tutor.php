@@ -67,7 +67,7 @@
                                     <span>{$rowSelectTutorInfor['username']}</span><br>
                                     <span>{$rowSelectTutorInfor['email']}</span>
                                     <br>
-                                    <span>is assign to </span>
+                                    <span>is assigned to </span>
                                     <span>{$numberOfStudent} student(s)</span>
                                     <br>
                                     <br>
@@ -85,12 +85,40 @@
                             if (isset($_GET['id']) == false){
 
                                 while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
+                                    $today = date('Y-m-d H:i');
+                                    $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
+                                    $resultSchedule = mysqli_query($db, $querySchedule);
+                                    $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
+                                    $stringDate = $rowSelectSchedule['time_schedule'];
+                                    $date = date_create($stringDate);
+                                    $scheduleDate = date_format($date,"Y-m-d H:i");
+
+                                    $date1 = new DateTime(strval($today));
+                                    $date2 = new DateTime(strval($scheduleDate));
+                                    $interval = $date2->diff($date1);
+
+
+
+                                    $remainingTime = '';
+                                    $scheduleDatePrint = '';
+                                    if (intval($interval->d) != 0){
+                                        $remainingTime .= $interval->d." days ";
+                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                                    }
+                                    if (intval($interval->h) != 0){
+                                        $remainingTime .= $interval->h." hours ";
+                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                                    }
+                                    //echo $remainingTime;
+
                                     echo "<li>
                                         <a href='student.php?id={$rowSelectStudentTutor['userID']}'>
                                             <div class='user d-flex'>
                                                 <div class='student'>
-                                                    <span>{$rowSelectStudentTutor['username']}</span>
-                                                    <span>{$rowSelectStudentTutor['email']}</span>
+                                                    <span>{$rowSelectStudentTutor['username']}</span><br>
+                                                    <span>{$rowSelectStudentTutor['email']}</span><br>
+                                                    <span>{$scheduleDatePrint}</span><br>
+                                                    <span>{$remainingTime}</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -179,7 +207,6 @@
                             <th scope="col">NUMBER OF MESSAGES</th>
                             <th scope="col">COMMENT(S) ON POSTS</th>
                             <th scope="col">MEETING SCHEDULED</th>
-                            <th scope="col">STATUS</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -195,13 +222,37 @@
                                     $resultsSelectNumberOfComments = mysqli_query($db, $querySelectNumberOfComments);
 
                                     $numberOfCommentStudent = mysqli_num_rows($resultsSelectNumberOfComments);
+
+                                    $today = date('Y-m-d H:i');
+                                    $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
+                                    $resultSchedule = mysqli_query($db, $querySchedule);
+                                    $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
+                                    $stringDate = $rowSelectSchedule['time_schedule'];
+                                    $date = date_create($stringDate);
+                                    $scheduleDate = date_format($date,"Y-m-d H:i");
+
+                                    $date1 = new DateTime(strval($today));
+                                    $date2 = new DateTime(strval($scheduleDate));
+                                    $interval = $date2->diff($date1);
+
+
+
+                                    $remainingTime = '';
+                                    $scheduleDatePrint = '';
+                                    if (intval($interval->d) != 0){
+                                        $remainingTime .= $interval->d." days ";
+                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                                    }
+                                    if (intval($interval->h) != 0){
+                                        $remainingTime .= $interval->h." hours ";
+                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                                    }
                                     echo "
                                         <tr>
                                             <td>{$rowSelectStudentTutor['email']}</td>
                                             <td>{$numberOfMessagesWithStudent}</td>
                                             <td>{$numberOfCommentStudent}</td>
-                                            <td>1-5</td>
-                                            <td>Teaching</td>
+                                            <td>{$scheduleDatePrint} - {$remainingTime}</td>
                                         </tr>
                                         ";
                                 }

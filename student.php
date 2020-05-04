@@ -110,67 +110,65 @@
         </nav>
 
         <div class="container-fluid"  style="background-color: #1b4b72; padding: 30px 20px 30px 20px">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#post-form">Post</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#schedule-form">Schedule</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#request-form">Request</a>
-                </li>
-            </ul>
 
-            <div class="tab-content">
-
-                <div id="post-form" class="tab-pane fade show active"><br>
-                    <form id="post_submit" action="postHandler.php" method="post" enctype="multipart/form-data">
-                        <input type="hidden" value="<?php echo $senderID;?>" name="userID">
-                        <input type="hidden" value="<?php echo date("Y-m-d H:i:s");?>" name="time_created">
-                        <div class="form-group" style="margin-top: 10px">
-                            <label for="comment">Post Content</label>
-                            <textarea class="form-control" rows="5" id="comment" name="post-content" required></textarea>
-                            <label for="imageToUpload">Image</label>
-                            <input class="form-control" type="file" name="imageToUpload" id="file">
+            <?php
+                if(isset($_GET['id']) == false){
+                    $dateToday = date('Y-m-d H:i:s');
+                    echo "
+                    <ul class='nav nav-tabs' role='tablist'>
+                        <li class='nav-item'>
+                            <a class='nav-link active' data-toggle='tab' href='#post-form'>Post</a>
+                        </li>
+                        <li class='nav-item'>
+                            <a class='nav-link' data-toggle='tab' href='#schedule-form'>Schedule</a>
+                        </li>
+                    </ul>
+                    <div class='tab-content'>
+                        <div id='post-form' class='tab-pane fade show active'><br>
+                            <form id='post_submit' action='postHandler.php' method='post' enctype='multipart/form-data'>
+                                <input type='hidden' value='{$senderID}' name='userID'>
+                                <input type='hidden' value='{$dateToday}' name='time_created'>
+                                <div class='form-group' style='margin-top: 10px'>
+                                    <label for='comment'>Post Content</label>
+                                    <textarea class='form-control' rows='5' id='comment' name='post-content' required></textarea>
+                                    <label for='imageToUpload'>Image</label>
+                                    <input class='form-control' type='file' name='imageToUpload' id='file'>
+                                </div>
+                                <button type='submit' name='post_submit' class='btn btn-primary'>Submit</button>
+                            </form>
                         </div>
-                        <button type="submit" name="post_submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-
-                <div id="schedule-form" class="tab-pane fade"><br>
-                    <form id="schedule_submit" action="scheduleHandler.php" method="post" enctype="multipart/form-data">
-                        <input type="hidden" value="<?php echo $senderID;?>" name="userID">
-                        <input type="hidden" value="<?php echo date("Y-m-d H:i:s");?>" name="time_created">
-                        <div class="form-row">
-                            <div class="col-md-8">
-                                <label>Setup Schedule</label>
-                                <input class="form-control" type="datetime-local" value="2020-04-20T13:45:00" id="example-datetime-local-input" name="time-schedule" required>
-                                <label for="description-schedule">Description</label>
-                                <textarea class="form-control" id="description-schedule" name="description-schedule" required></textarea>
-                                <button type="submit" class="btn btn-primary" name="schedule_submit">Submit</button>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="title-schedule">Related Document</label>
-                                <input class="form-control" type="file">
-                                <ul>
-                                    <li>1</li>
-                                    <li>2</li>
-                                    <li>3</li>
-                                </ul>
-                            </div>
+        
+                        <div id='schedule-form' class='tab-pane fade'><br>
+                            <form id='schedule_submit' action='scheduleHandler.php' method='post' enctype='multipart/form-data'>
+                                <input type='hidden' value='{$senderID}' name='userID'>
+                                <input type='hidden' value='{$dateToday}' name='time_created'>
+                                <div class='form-row'>
+                                    <div class='col-md-8'>
+                                        <label>Setup Schedule</label>
+                                        <input class='form-control' type='datetime-local' value='2020-04-20T13:45:00' id='example-datetime-local-input' name='time-schedule' required>
+                                        <label for='description-schedule'>Description</label>
+                                        <textarea class='form-control' id='description-schedule' name='description-schedule' required></textarea>
+                                        <button type='submit' class='btn btn-primary' name='schedule_submit'>Submit</button>
+                                    </div>
+                                    <div class='col-md-4'>
+                                        <label for='title-schedule'>Related Document</label>
+                                        <input class='form-control' type='file'>
+                                        <ul>
+                                            <li>1</li>
+                                            <li>2</li>
+                                            <li>3</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-
-                <div id="request-form" class="tab-pane fade"><br>
-                    <form action="">
-                        <label for="comment">Post Content</label>
-                        <textarea class="form-control" rows="5" id="comment"></textarea>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
+                    </div>
+                    ";
+                }
+            ?>
+            
+            
+            
         </div>
 
 
