@@ -7,7 +7,7 @@
     if (!isset($_SESSION['username'])) {
         $_SESSION['msg'] = "You must log in first";
         header('location: login.php');
-        if ($_SESSION['user_role'] != 'student') {
+        if ($_SESSION['user_role'] != 'student' || $_SESSION['user_role'] != 'tutor') {
             $_SESSION['msg'] = "Unauthorized Access";
             header('location: login.php');
         }
@@ -19,9 +19,68 @@
         header("location: login.php");
     }
 
+//    if (isset($_GET['id'])){
+//        $userID= $_GET['id'];
+//        $_SESSION['studentID'] = $_GET['id'];
+//    }else{
+//        $userID= $_SESSION['userID'];
+//    }
+
+
+
 ?>
 
 <?php include('header.php') ?>
+
+<?php
+
+
+    $senderID = $_SESSION['userID'];
+    if (isset($_GET['id'])){
+        $receiverID = $_GET['id'];
+        $_SESSION['studentID'] = $_GET['id'];
+    }else{
+
+        $querySelectTutorStudent = "SELECT * FROM students WHERE userID = '{$_SESSION['userID']}'";
+        $resultsSelectTutorStudent = mysqli_query($db, $querySelectTutorStudent);
+        $rowSelectTutorStudent = mysqli_fetch_assoc($resultsSelectTutorStudent);
+
+        $tutorIDForStudent = $rowSelectTutorStudent['tutorID'];
+        $receiverID = substr($tutorIDForStudent, 5);
+    }
+
+?>
+
+<a id="toggle-button-chat" style="z-index: 1000"><img src="images/chaticon.png" id="fixedbutton"></a>
+
+<div class="chat-window" id="chat_window_1" style="position:fixed;right:-5px;bottom:10px;z-index: 1000000" >
+    <div class="panel panel-default">
+        <div class="panel-heading top-bar">
+                <h3 class="float-left">Chat</h3>
+                <h6 id="close-chat" class="float-right" style="margin-top: 15px">Close</h6>
+        </div>
+        <div class='panel-body msg_container_base' style= 'height:500px;' id="scroll-messages">
+            <div id="chat-window-wrapper"></div>
+        </div>
+
+        <div class="panel-footer">
+            <div id="div-form">
+                <form id="message_post" action="messageHandler.php" method="post" style="margin-top: 10px">
+                    <div class="form-row">
+                        <div class="col-8">
+                            <input type="text" name="message-context" id="message-context" class="form-control">
+                        </div>
+                        <div class="col-4">
+                            <input type="submit" name="message_post" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="wrapper">
     <!-- Sidebar Holder -->
     <nav id="sidebar">
@@ -35,6 +94,7 @@
 
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button class="w3-button w3-teal w3-xlarge w3-right" onclick="openRightMenu()">&#9776;</button>
 
             <div class="container-fluid">
                 <button type="button" id="sidebarCollapse" class="navbar-btn">
@@ -63,26 +123,32 @@
             </ul>
 
             <div class="tab-content">
+
                 <div id="post-form" class="tab-pane fade show active"><br>
-                    <form action="">
+                    <form id="post_submit" action="postHandler.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="<?php echo $senderID;?>" name="userID">
+                        <input type="hidden" value="<?php echo date("Y-m-d H:i:s");?>" name="time_created">
                         <div class="form-group" style="margin-top: 10px">
                             <label for="comment">Post Content</label>
-                            <textarea class="form-control" rows="5" id="comment"></textarea>
+                            <textarea class="form-control" rows="5" id="comment" name="post-content" required></textarea>
+                            <label for="imageToUpload">Image</label>
+                            <input class="form-control" type="file" name="imageToUpload" id="file">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" name="post_submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
+
                 <div id="schedule-form" class="tab-pane fade"><br>
-                    <form class="" action="">
+                    <form id="schedule_submit" action="scheduleHandler.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="<?php echo $senderID;?>" name="userID">
+                        <input type="hidden" value="<?php echo date("Y-m-d H:i:s");?>" name="time_created">
                         <div class="form-row">
                             <div class="col-md-8">
                                 <label>Setup Schedule</label>
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
-                                <label for="title-schedule">Title</label>
-                                <input class="form-control" id="title-schedule">
+                                <input class="form-control" type="datetime-local" value="2020-04-20T13:45:00" id="example-datetime-local-input" name="time-schedule" required>
                                 <label for="description-schedule">Description</label>
-                                <textarea class="form-control" id="description-schedule"></textarea>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <textarea class="form-control" id="description-schedule" name="description-schedule" required></textarea>
+                                <button type="submit" class="btn btn-primary" name="schedule_submit">Submit</button>
                             </div>
                             <div class="col-md-4">
                                 <label for="title-schedule">Related Document</label>
@@ -94,7 +160,6 @@
                                 </ul>
                             </div>
                         </div>
-
                     </form>
                 </div>
 
@@ -108,145 +173,163 @@
             </div>
         </div>
 
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="text-center">
-                        <div style="padding-top: 10px; padding-bottom: 10px; background-color: #1d643b; margin-bottom: 10px">
-                            <h1>13</h1>
-                            <h3>March</h3>
-                        </div>
 
-                        <h4>4/10/2020</h4>
-                        <h4 style="margin-top: 20px">Status</h4>
-                        <h4>In Comming</h4>
-                    </div>
-
-                </div>
-                <div class="col-sm-10">
-                    <h1>Schedule Title</h1>
-                    <p>Postman is a collaboration platform for API development. Postman's features simplify each step of building an API and streamline collaboration so you can create better APIs—faster.</p>
-                    <h1>Related Document</h1>
-                    <ul>
-                        <li>something1</li>
-                        <li>something1</li>
-                        <li>something1</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="image-post text-center">
-                        <img src="https://dummyimage.com/600x400/3d3d3d/fff" class="img-fluid" alt="Responsive image">
-                    </div>
-                    <div class="content-post" style="margin-top: 10px">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nihil hic delectus excepturi ipsam
-                            reprehenderit iusto rem, quam, repellendus accusantium culpa reiciendis sit dolorum aut aperiam a
-                            architecto. Fuga, sit.</p>
-                        <p>4/10/2020 - 3:40</p>
-                    </div>
-                </div>
-
-            </div>
-            <hr>
-            <div class="row">
-                <form action="">
-                    <div class="col-sm-10">
-                        <div class="form-group" style="margin-top: 10px">
-                            <input class="form-control" rows="5"  id="comment-post" placeholder="Comment here">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-            <hr>
-        </div>
-
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="image-post text-center">
-                        <img src="https://dummyimage.com/0x0/3d3d3d/fff" class="img-fluid" alt="Responsive image">
-                    </div>
-                    <div class="content-post" style="margin-top: 10px">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nihil hic delectus excepturi ipsam
-                            reprehenderit iusto rem, quam, repellendus accusantium culpa reiciendis sit dolorum aut aperiam a
-                            architecto. Fuga, sit.</p>
-                        <p>4/10/2020 - 3:40</p>
-                    </div>
-                </div>
-
-            </div>
-            <hr>
-            <div class="row">
-                <form action="">
-                    <div class="col-sm-10">
-                        <div class="form-group" style="margin-top: 10px">
-                            <input class="form-control" rows="5"  id="comment-post" placeholder="Comment here">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-            <hr>
-
-            <hr>
-            <div class="row">
-
-                <div class="col-md-2 text-center">
-                    <div style="background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto">
-
-                    </div>
-                </div>
-                <div class="col-md-10">
-                    <h1>cuong@cuong</h1>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-                    <p>4/10/2020 - 3:40</p>
-
-                    <div style="background-color: #1b1e21; height: 1px; width: 100%"></div>
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-2 text-center">
-                    <div style="background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto">
-
-                    </div>
-                </div>
-                <div class="col-md-10">
-                    <h1>cuong@cuong</h1>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-                    <p>4/10/2020 - 3:40</p>
-                    <div style="background-color: #1b1e21; height: 1px; width: 100%"></div>
-                </div>
-
-            </div>
-
-        </div>
-
+        <div id="schedule-wrapper"></div>
+        <div id="posts-wrapper"></div>
     </div>
 
 
 </div>
-
-
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            $(this).toggleClass('active');
+        $('#chat_window_1').hide();
+
+        $("#toggle-button-chat").click(function() {
+            $('#chat_window_1').toggle({
+                duration: 300,
+            });
         });
-        $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+        $("#close-chat").click(function () {
+            $('#chat_window_1').hide();
+        });
+
+
+        // $('#sidebarCollapse').on('click', function () {
+        //     $('#sidebar').toggleClass('active');
+        //     $(this).toggleClass('active');
+        // });
+        // $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+
+        function runajax(){
+            let datapost = {"receiverID" : "<?php echo $receiverID?>", "senderID" : "<?php echo $senderID?>"};
+            console.log(datapost);
+            $.ajax({
+                url: "postHandler.php",
+                type: "POST",
+                data:  new FormData(),
+                contentType: false,
+                cache: true,
+                processData:false,
+                success: function(data){
+                    $("#posts-wrapper").html(data);
+                }, error: function() {
+                    $("#posts-wrapper").html("<p></p>");
+                }
+            });
+
+            $.ajax({
+                url: "scheduleHandler.php",
+                type: "POST",
+                data:  new FormData(),
+                contentType: false,
+                cache: true,
+                processData:false,
+                success: function(data){
+                    $("#schedule-wrapper").html(data);
+                }, error: function() {
+                    $("#schedule-wrapper").html("<p></p>");
+                }
+            });
+
+            $.ajax({
+                url: "messageHandler.php",
+                type: "POST",
+                data: datapost,
+                success: function(data){
+                    $("#chat-window-wrapper").html(data);
+                }, error: function() {
+                    $("#chat-window-wrapper").html("<p>error</p>");
+                }
+            });
+        }
+
+        runajax();
+
+        setInterval(function(){
+            runajax();
+        }, 5000);
+
+        $("#schedule_submit").on('submit',(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "scheduleHandler.php",
+                type: "POST",
+                data:  new FormData(this),
+                contentType: false,
+                cache: true,
+                processData:false,
+                success: function(data){
+                    $("#schedule-wrapper").html(data);
+                }, error: function() {
+                    $("#schedule-wrapper").html("<p>error</p>");
+                }
+            });
+        }));
+
+
+        $("#post_submit").on('submit',(function(e) {
+            let file_data = $('#file').prop('files')[0];
+            let formData = new FormData(this);
+            formData.append('file', file_data);
+
+            e.preventDefault();
+            $.ajax({
+                url: "postHandler.php",
+                type: "POST",
+                data:  formData,
+                enctype: 'multipart/form-data',
+                contentType: false,
+                cache: false,
+                processData:false,
+                async: false,
+                dataType: 'text',
+                success: function(data){
+                    $("#posts-wrapper").html(data);
+                }, error: function() {
+                    $("#posts-wrapper").html("<p></p>");
+                }
+            });
+        }));
+
+        function scrollBottom(){
+            $('#scroll-messages').stop().animate({
+                scrollTop: $('#scroll-messages')[0].scrollHeight * $('#scroll-messages')[0].scrollHeight
+            }, 300);
+        }
+        scrollBottom();
+
+        $("#message_post").on('submit',(function(e) {
+            let inputVal = document.getElementById("message-context").value;
+            let datapost = {"receiverID" : "<?php echo $receiverID?>", "senderID" : "<?php echo $senderID?>", "message-context" : inputVal};
+            e.preventDefault();
+            $.ajax({
+                url: "messageHandler.php",
+                type: "POST",
+                data: datapost,
+                success: function(data){
+                    console.log(data);
+                    $("#chat-window-wrapper").html(data);
+                }, error: function() {
+                    $("#chat-window-wrapper").html("<p>error</p>");
+                }
+            });
+            scrollBottom();
+            document.getElementById("message-context").value = '';
+        }));
     });
 </script>
+<script>
+    function openRightMenu() {
+        document.getElementById("rightMenu1").style.display = "block";
+    }
+
+    function closeRightMenu() {
+        document.getElementById("rightMenu1").style.display = "none";
+    }
+
+</script>
+
+
+
 
 <?php include('footer.php') ?>

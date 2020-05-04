@@ -1,18 +1,6 @@
-<?php
-    $db = mysqli_connect('localhost', 'root', '', 'etutor');
-    if(!isset($_SESSION))
-    {
-        session_start();
-    }
+<?php include('header_staff.php') ?>
 
-    if (!isset($_SESSION['username'])) {
-        $_SESSION['msg'] = "You must log in first";
-        if ($_SESSION['user_role'] == 'staff') {
-            $_SESSION['msg'] = "Unauthorized Access";
-            header('location: login.php');
-        }
-        header('location: login.php');
-    }
+<?php
 
 
     if (isset($_POST['radioRole'])) {
@@ -28,6 +16,10 @@
             $insertNewTutorQuery .= "VALUES ('{$tutorID}', '{$_POST['id']}')";
 
             mysqli_query($db, $insertNewTutorQuery);
+
+            $queryUpdateTutorTotalAssign = "UPDATE tutors SET total_assigned_student = total_assigned_student + 1 WHERE tutorID = '{$tutorID}'";
+            mysqli_query($db, $queryUpdateTutorTotalAssign);
+
             header('location: unassignedUser.php');
         }else{
             $selectTutors = "SELECT * FROM tutors WHERE userID='{$_POST['tutorname']}'";
@@ -44,26 +36,7 @@
     }
 
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>GW E Tutor</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
-    <!--        <link rel="stylesheet" type="text/css" href="css/style.css">-->
-    <!--        <link rel="stylesheet" type="text/css" href="css/staffDashboard.css">-->
-
-</head>
-<body>
 
 <form action="newAssign.php" method="post">
     <input type="hidden" name="id" value="<?php echo $_GET['id']?>">

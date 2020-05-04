@@ -1,41 +1,6 @@
-<?php
-    if(!isset($_SESSION))
-    {
-        session_start();
-    }
-
-    if (!isset($_SESSION['username'])) {
-        $_SESSION['msg'] = "You must log in first";
-        if ($_SESSION['user_role'] == 'staff') {
-            $_SESSION['msg'] = "Unauthorized Access";
-            header('location: login.php');
-        }
-        header('location: login.php');
-    }
+<?php include('header_staff.php') ?>
 
 
-
-    if (isset($_GET['logout'])) {
-        session_destroy();
-        unset($_SESSION['username']);
-        header("location: login.php");
-    }
-
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script src="https://kit.fontawesome.com/96bd6ee534.js" crossorigin="anonymous"></script>
-    <title>Document</title>
-</head>
-
-<body>
 <div class="container-fluid">
     <div class="row">
         <div class="wrapper">
@@ -84,80 +49,105 @@
                             <span id="title">Number of Students</span>
                             <canvas id="my-tutor-pie-chart"></canvas>
                             <div class="result-tutor d-flex justify-content-around">
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>238(75%)</span>
-                                    <span>with Tutor</span>
-                                </div>
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>238(75%)</span>
-                                    <span>with Tutor</span>
-                                </div>
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>238(75%)</span>
-                                    <span>with Tutor</span>
-                                </div>
+                                <?php
+                                    $querySelectStudent = "SELECT * FROM students WHERE tutorID != ''";
+                                    $resultsSelectStudent = mysqli_query($db, $querySelectStudent);
+                                    $numberOfStudentWithTutor = mysqli_num_rows($resultsSelectStudent);
+
+                                    $querySelectAllStudent = "SELECT * FROM students WHERE 1=1";
+                                    $resultsSelectAllStudent = mysqli_query($db, $querySelectStudent);
+                                    $numberOfAllStudent = mysqli_num_rows($resultsSelectAllStudent);
+
+                                    $numberOfStudentWithoutTutor = $numberOfAllStudent - $numberOfStudentWithTutor;
+                                    echo "
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>{$numberOfStudentWithTutor}</span>
+                                        <span>with Tutor</span>
+                                    </div>
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>$numberOfAllStudent</span>
+                                        <span>Total Student</span>
+                                    </div>
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>{$numberOfStudentWithoutTutor}</span>
+                                        <span>without Tutor</span>
+                                    </div>
+                                    ";
+                                ?>
+
                             </div>
                         </div>
                         <div class="pie-student">
                             <span id="title">Number of Tutors</span>
                             <canvas id="my-student-pie-chart"></canvas>
                             <div class="result-tutor d-flex justify-content-around">
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>238(75%)</span>
-                                    <span>with Student</span>
-                                </div>
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>Total</span>
-                                    <span>238</span>
-                                </div>
-                                <div class="with-tutor d-flex flex-column">
-                                    <span>238(75%)</span>
-                                    <span>without Student</span>
-                                </div>
+                                <?php
+                                $querySelectTutorWithStudents = "SELECT * FROM tutors WHERE total_assigned_student > 1";
+                                $resultsSelectTutorWithStudents = mysqli_query($db, $querySelectTutorWithStudents);
+                                $numberOfTutorWithStudent = mysqli_num_rows($resultsSelectTutorWithStudents);
+
+                                $querySelectAllTutor = "SELECT * FROM tutors WHERE 1=1";
+                                $resultSelectAllTutor = mysqli_query($db, $querySelectAllTutor);
+                                $numberOfAllTutors = mysqli_num_rows($resultSelectAllTutor);
+
+                                $numberOfTutorWithoutStudents = $numberOfAllTutors - $numberOfTutorWithStudent;
+                                echo "
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>{$numberOfTutorWithStudent}</span>
+                                        <span>with Students</span>
+                                    </div>
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>{$numberOfAllTutors}</span>
+                                        <span>Total Tutors</span>
+                                    </div>
+                                    <div class='with-tutor d-flex flex-column'>
+                                        <span>{$numberOfTutorWithoutStudents}</span>
+                                        <span>without Students</span>
+                                    </div>
+                                    ";
+                                ?>
+                                
                             </div>
                         </div>
                         <div class="summary">
                             <div class="summary-active d-flex">
-                                <div class="total-left-result">
-                                    <div class="total-meeting total d-flex justify-content-around">
-                                        <span id="words">Number of Meeting</span>
-                                        <span id="number">256</span>
+                                <?php
+                                    $querySelectAllPosts = "SELECT * FROM posts WHERE 1=1";
+                                    $resultSelectAllPosts = mysqli_query($db, $querySelectAllPosts);
+                                    $numberOfPosts = mysqli_num_rows($resultSelectAllPosts);
+
+                                    $querySelectAllComments = "SELECT * FROM comments WHERE 1=1";
+                                    $resultSelectAllComments = mysqli_query($db, $querySelectAllComments);
+                                    $numberOfComments = mysqli_num_rows($resultSelectAllComments);
+
+                                    $querySelectAllMessages = "SELECT * FROM messages WHERE 1=1";
+                                    $resultSelectAllMessages = mysqli_query($db, $querySelectAllMessages);
+                                    $numberOfMessages = mysqli_num_rows($resultSelectAllMessages);
+                                    
+                                    echo "
+                                    <div class='total-left-result'>
+                                        <div class='total-meeting total d-flex justify-content-around'>
+                                            <span id='words'>Number of Meeting</span>
+                                            <span id='number'>256</span>
+                                        </div>
+                                        <div class='total-meeting total d-flex justify-content-around'>
+                                            <span id='words'>Number of Post</span>
+                                            <span id='number'>{$numberOfPosts}</span>
+                                        </div>
+                                        <div class='total-meeting total d-flex justify-content-around'>
+                                            <span id='words'>Number of Comment</span>
+                                            <span id='number'>{$numberOfComments}</span>
+                                        </div>
                                     </div>
-                                    <div class="total-meeting total d-flex justify-content-around">
-                                        <span id="words">Number of Meeting</span>
-                                        <span id="number">256</span>
+                                    <div class='total-right-result d-flex flex-column'>
+                                        <div class='total-blogs d-flex flex-column'>
+                                            <span id='blogs'>Number of Messages</span>
+                                            <span id='number-blogs'>{$numberOfMessages}</span>
+                                        </div>
                                     </div>
-                                    <div class="total-meeting total d-flex justify-content-around">
-                                        <span id="words">Number of Meeting</span>
-                                        <span id="number">256</span>
-                                    </div>
-                                </div>
-                                <div class="total-right-result d-flex flex-column">
-                                    <div class="total-blogs d-flex flex-column">
-                                        <span id="blogs">Number of Blogs</span>
-                                        <span id="number-blogs">186</span>
-                                    </div>
-                                    <div class="total-meeting total d-flex justify-content-around">
-                                        <span id="words">Number of Meeting</span>
-                                        <span id="number">256</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="summary-inactive d-flex">
-                                <div class="inactive-student d-flex justify-content-around">
-                                    <span id="inactive">Inactive Students</span>
-                                    <div class="result-inactive">
-                                        <span>44/276</span>
-                                        <span>13%</span>
-                                    </div>
-                                </div>
-                                <div class="inactive-student d-flex justify-content-around">
-                                    <span id="inactive">Inactive Tutor</span>
-                                    <div class="result-inactive">
-                                        <span>44/276</span>
-                                        <span>13%</span>
-                                    </div>
-                                </div>
+                                    ";
+                                ?>
+                                
                             </div>
                         </div>
                     </div>
@@ -165,7 +155,17 @@
             </div>
         </div>
 
-    </div>
+    </div></div>
+    <?php
+    $arrayLatestSevenDays = array();
+    for ($i = 6; $i >= 0; $i--){
+        $stringDayAgo = '-' . $i . ' days';
+        $lastWeek = date("Y/m/d", strtotime($stringDayAgo));
+        array_push($arrayLatestSevenDays, $lastWeek);
+    }
+
+
+    ?>
 
 
     <script>
@@ -175,19 +175,80 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ["09/04/2020","10/04/2020","11/04/2020","12/04/2020","13/04/2020","14/04/2020","15/04/2020","16/04/2020","17/04/2020"],
+                labels: [<?php
+                        $sevenDayString = "";
+                        foreach($arrayLatestSevenDays as $value){
+                            $sevenDayString .= '"' . $value . '"' . ",";
+                        }
+                        $sevenDayString = rtrim($sevenDayString, ",");
+                        echo $sevenDayString;
+                    ?>],
                 datasets: [{
-                    label: 'Student Message',
+                    label: "Students' Messages",
                     backgroundColor: "#caf270",
-                    data: [12, 59, 5, 56, 58,12, 59, 87, 45],
+                    stack: "Stack 0",
+                    data: [<?php
+                            $dataStudentMessages = "";
+                            foreach($arrayLatestSevenDays as $value){
+                                $querySelectMessageEachDay = "SELECT * FROM students INNER JOIN messages ON students.userID = messages.from_userID WHERE time_created LIKE '$value%'";
+                                $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                                $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                                $dataStudentMessages .= '"' . $numberOfMessageEachDay . '"' . ",";
+                            }
+                            $dataStudentMessages = rtrim($dataStudentMessages, ",");
+                            echo $dataStudentMessages;
+                        ?>],
                 }, {
-                    label: 'Tutor Message',
+                    label: "Tutors' Messages",
                     backgroundColor: "#45c490",
-                    data: [12, 59, 5, 56, 58,12, 59, 85, 23],
+                    stack: "Stack 0",
+                    data: [<?php
+                            $dataTutorMessages = "";
+                            foreach($arrayLatestSevenDays as $value){
+                                $querySelectMessageEachDay = "SELECT * FROM tutors INNER JOIN messages ON tutors.userID = messages.from_userID WHERE time_created LIKE '$value%'";
+                                $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                                $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                                $dataTutorMessages .= '"' . $numberOfMessageEachDay . '"' . ",";
+                            }
+                            $dataTutorMessages = rtrim($dataTutorMessages, ",");
+                            echo $dataTutorMessages;
+                        ?>],
                 }, {
-                    label: 'Active Student',
+                    label: "Student's Comments",
+                    backgroundColor: "#008d53",
+                    stack: "Stack 1",
+                    data: [<?php
+                            $dataStudentComments = "";
+                            foreach($arrayLatestSevenDays as $value){
+                                $dateConverter = str_replace("/","-",$value);
+                                $querySelectCommentEachDay = "SELECT * FROM students INNER JOIN comments ON students.userID = comments.userID WHERE time_created LIKE '$dateConverter%'";
+                                $resultsSelectCommentEachDay = mysqli_query($db, $querySelectCommentEachDay);
+                                $numberOfCommentEachDay = mysqli_num_rows($resultsSelectCommentEachDay);
+
+                                $dataStudentComments .= '"' . $numberOfCommentEachDay . '"' . ",";
+                            }
+                            $dataStudentComments = rtrim($dataStudentComments, ",");
+                            echo $dataStudentComments;
+                        ?>],
+                }, {
+                    label: "Tutors' Comments",
                     backgroundColor: "#008d93",
-                    data: [12, 59, 5, 56, 58,12, 59, 65, 51],
+                    stack: "Stack 1",
+                    data: [<?php
+                        $dataTutorComments = "";
+                        foreach($arrayLatestSevenDays as $value){
+                            $dateConverter = str_replace("/","-",$value);
+                            $querySelectMessageEachDay = "SELECT * FROM tutors INNER JOIN comments ON tutors.userID = comments.userID WHERE time_created LIKE '$dateConverter%'";
+                            $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                            $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                            $dataTutorComments .= '"' . $numberOfMessageEachDay . '"' . ",";
+                        }
+                        $dataTutorComments = rtrim($dataTutorComments, ",");
+                        echo $dataTutorComments;
+                        ?>],
                 }],
             },
             options: {
@@ -237,7 +298,7 @@
                 datasets: [{
                     label: "Population (millions)",
                     backgroundColor: ["#3e95cd", "#8e5ea2"],
-                    data: [2478,5267]
+                    data: [<?php echo $numberOfStudentWithoutTutor?>, <?php echo $numberOfStudentWithTutor?>]
                 }]
             },
         });
@@ -255,7 +316,7 @@
                 datasets: [{
                     label: "Population (millions)",
                     backgroundColor: ["#3e95cd", "#8e5ea2"],
-                    data: [1000,5267]
+                    data: [<?php echo $numberOfTutorWithStudent?>, <?php echo $numberOfTutorWithoutStudents?>]
                 }]
             },
         });

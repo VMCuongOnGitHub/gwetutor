@@ -1,41 +1,6 @@
-<?php
-if(!isset($_SESSION))
-{
-    session_start();
-}
-
-if (!isset($_SESSION['username'])) {
-    $_SESSION['msg'] = "You must log in first";
-    if ($_SESSION['user_role'] == 'staff') {
-        $_SESSION['msg'] = "Unauthorized Access";
-        header('location: login.php');
-    }
-    header('location: login.php');
-}
+<?php include('header_staff.php') ?>
 
 
-
-if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    header("location: login.php");
-}
-
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script src="https://kit.fontawesome.com/96bd6ee534.js" crossorigin="anonymous"></script>
-    <title>Document</title>
-</head>
-
-<body>
     <div class="container-fluid">
         <div class="row">
             <div class="wrapper">
@@ -64,33 +29,32 @@ if (isset($_GET['logout'])) {
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">ID</th>
+                                <th scope="col">TUTOR NAME</th>
                                 <th scope="col">TUTOR EMAIL</th>
-                                <th scope="col">HAS BEEN ASSIGN FOR <i class="fas fa-sort"></i></th>
-                                <th scope="col">IS ASSIGN TO <i class="fas fa-sort"></i></th>
+                                <th scope="col">IS ASSIGNING TO <i class="fas fa-sort"></i></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark@gmail.com</td>
-                                <td>Otto</td>
-                                <td>5</td>
-                                <td>ASSIGNED TO</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Mark@gmail.com</td>
-                                <td>Thornton</td>
-                                <td>10</td>
-                                <td>ASSIGNED TO</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Mark@gmail.com</td>
-                                <td>the Bird</td>
-                                <td>10</td>
-                                <td>ASSIGNED TO</td>
-                            </tr>
+                            <?php
+                                $querySelectAllTutors = "SELECT * FROM users WHERE is_assigned_role='tutor'";
+                                $results = mysqli_query($db, $querySelectAllTutors);
+
+                                while($row = mysqli_fetch_assoc($results)) {
+                                    $tutorID = 'tutor' . $row['userID'];
+                                    $querySelectAllTutorsInStudent = "SELECT * FROM students WHERE tutorID='{$tutorID}'";
+
+                                    $resultsSelectAllTutorsInStudent = mysqli_query($db, $querySelectAllTutorsInStudent);
+
+                                    $numberOfAssigningStudent = mysqli_num_rows($resultsSelectAllTutorsInStudent);
+
+                                    echo "<tr>
+                                            <td>{$row['userID']}</td>
+                                            <td><a href='../tutor.php?id={$row['userID']}'>{$row['username']}</a></td>
+                                            <td>{$row['email']}</td>
+                                            <td>{$numberOfAssigningStudent} Student(s)</td>
+                                        </tr>";
+                                }
+                            ?>
                             </tbody>
                         </table>
                     </div>

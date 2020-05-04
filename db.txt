@@ -10,6 +10,7 @@ CREATE TABLE Users (
 CREATE TABLE Tutors (
     tutorID varchar(50) NOT NULL PRIMARY KEY,
     userID varchar(50) NOT NULL,
+    total_assigned_student int,
     FOREIGN KEY (userID) REFERENCES Users(userID)
 );
 CREATE TABLE Students (
@@ -18,6 +19,14 @@ CREATE TABLE Students (
     tutorID varchar(50) NOT NULL,
     FOREIGN KEY (userID) REFERENCES Users(userID),
 	  FOREIGN KEY (tutorID) REFERENCES Tutors(tutorID)
+);
+CREATE TABLE Messages (
+    messageID varchar(50) NOT NULL PRIMARY KEY,
+    userID varchar(50) NOT NULL,
+    tutorID varchar(50) NOT NULL,
+    content_message varchar(255) NOT NULL,
+    FOREIGN KEY (userID) REFERENCES Users(userID),
+	 FOREIGN KEY (tutorID) REFERENCES Tutors(tutorID)
 );
 CREATE TABLE Staffs (
     staffID varchar(50) NOT NULL PRIMARY KEY,
@@ -42,6 +51,14 @@ CREATE TABLE Comments (
 	content_comment varchar(255) NOT NULL,
 	image_post varchar(255),
 	time_created varchar(50)
+);
+CREATE TABLE Images (
+    imageID varchar(50) NOT NULL PRIMARY KEY,
+    image_name varchar(50) NOT NULL,
+    postID varchar(50) NOT NULL,
+    commentID varchar(50) NOT NULL,
+    FOREIGN KEY (postID) REFERENCES Posts(postID),
+	FOREIGN KEY (commentID) REFERENCES Comments(commentID),
 );
 CREATE TABLE Requests (
     requestID varchar(50) NOT NULL PRIMARY KEY,

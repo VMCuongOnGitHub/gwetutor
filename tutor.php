@@ -18,223 +18,323 @@
         unset($_SESSION['username']);
         header("location: login.php");
     }
+
+
+    $userID = $_SESSION['userID'];
+    if (isset($_GET['id'])){
+        $userID = $_GET['id'];
+    }
+
 ?>
+
 <?php include('header.php') ?>
 
+<body>
 
-<div class="wrapper">
-    <!-- Sidebar Holder -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>Tutor</h3>
-            <p> <a href="index.php?logout='1'" style="color: red;">logout</a> </p>
-        </div>
-    </nav>
-    <!-- Page Content Holder -->
-    <div id="content">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <button type="button" id="sidebarCollapse" class="navbar-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+<div class="container-fluid">
+    <div class="row">
+        <div class="wrapper">
 
-                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-align-justify"></i>
-                </button>
-            </div>
-        </nav>
+            <div class="sidebar">
+                <div class="infor-user d-flex justify-content-around">
+                    <div class="detail">
+                        <?php
+                            $querySelectTutor = "SELECT * FROM tutors WHERE userID = '{$userID}'";
+                            $resultsSelectTutor = mysqli_query($db, $querySelectTutor);
+                            $rowSelectTutor = mysqli_fetch_assoc($resultsSelectTutor);
 
 
-        <div class="container-fluid"  style="background-color: #1b4b72; padding: 30px 20px 30px 20px">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item ">
-                    <a class="nav-link active" data-toggle="tab" href="#schedule-form">Schedule</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#request-form">Request</a>
-                </li>
-            </ul>
+                            $querySelectStudentTutor = "SELECT users.userID, users.username, users.email FROM students INNER JOIN users ON users.userID = students.userID WHERE tutorID = '{$rowSelectTutor['tutorID']}'";
+                            $resultsSelectStudentTutor = mysqli_query($db, $querySelectStudentTutor);
 
-            <div class="tab-content">
-                <div id="schedule-form" class="tab-pane fade show active"><br>
-                    <form class="" action="">
-                        <div class="form-row">
-                            <div class="col-md-8">
-                                <label>Setup Schedule</label>
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
-                                <label for="title-schedule">Title</label>
-                                <input class="form-control" id="title-schedule">
-                                <label for="description-schedule">Description</label>
-                                <textarea class="form-control" id="description-schedule"></textarea>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="title-schedule">Related Document</label>
-                                <input class="form-control" type="file">
-                                <ul>
-                                    <li>1</li>
-                                    <li>2</li>
-                                    <li>3</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-
-                <div id="request-form" class="tab-pane fade"><br>
-                    <form action="">
-                        <label for="comment">Post Content</label>
-                        <textarea class="form-control" rows="5" id="comment"></textarea>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+                            $querySelectTutorInfor = "SELECT * FROM users WHERE userID = '{$userID}'";
+                            $resultsSelectTutorInfor = mysqli_query($db, $querySelectTutorInfor);
+                            $rowSelectTutorInfor = mysqli_fetch_assoc($resultsSelectTutorInfor);
 
 
+                            $numberOfStudent = mysqli_num_rows($resultsSelectStudentTutor);
+                            if (isset($_GET['id']) == false){
 
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="text-center">
-                        <div style="padding-top: 10px; padding-bottom: 10px; background-color: #1d643b; margin-bottom: 10px">
-                            <h1>13</h1>
-                            <h3>March</h3>
-                        </div>
+                                echo "
+                                <span>{$rowSelectTutorInfor['username']}</span><br>
+                                <span>{$rowSelectTutorInfor['email']}</span>
+                                <span>is assign to </span>
+                                <span>{$numberOfStudent} students</span>
+                                
+                            ";
+                            }else{
+                                echo "
+                                    <span>{$rowSelectTutorInfor['username']}</span><br>
+                                    <span>{$rowSelectTutorInfor['email']}</span>
+                                    <br>
+                                    <span>is assign to </span>
+                                    <span>{$numberOfStudent} student(s)</span>
+                                    <br>
+                                    <br>
+                                    <a class='btn btn-primary' href='staff/staffDashboard.php' role='button'>Back</a>
+                                ";
+                                
+                            }
+                        ?>
 
-                        <h4>4/10/2020</h4>
-                        <h4 style="margin-top: 20px">Status</h4>
-                        <h4>In Comming</h4>
                     </div>
-
                 </div>
-                <div class="col-sm-10">
-                    <h1>Schedule Title</h1>
-                    <p>Postman is a collaboration platform for API development. Postman's features simplify each step of building an API and streamline collaboration so you can create better APIs—faster.</p>
-                    <h1>Related Document</h1>
+                <div class="assigned">
                     <ul>
-                        <li>something1</li>
-                        <li>something1</li>
-                        <li>something1</li>
+                        <?php
+                            if (isset($_GET['id']) == false){
+
+                                while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
+                                    echo "<li>
+                                        <a href='student.php?id={$rowSelectStudentTutor['userID']}'>
+                                            <div class='user d-flex'>
+                                                <div class='student'>
+                                                    <span>{$rowSelectStudentTutor['username']}</span>
+                                                    <span>{$rowSelectStudentTutor['email']}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>";
+                                }
+                            }
+
+
+                        ?>
+
+
                     </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="image-post text-center">
-                        <img src="https://dummyimage.com/600x400/3d3d3d/fff" class="img-fluid" alt="Responsive image">
-                    </div>
-                    <div class="content-post" style="margin-top: 10px">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nihil hic delectus excepturi ipsam
-                            reprehenderit iusto rem, quam, repellendus accusantium culpa reiciendis sit dolorum aut aperiam a
-                            architecto. Fuga, sit.</p>
-                        <p>4/10/2020 - 3:40</p>
-                    </div>
-                </div>
 
-            </div>
-            <hr>
-            <div class="row">
-                <form action="">
-                    <div class="col-sm-10">
-                        <div class="form-group" style="margin-top: 10px">
-                            <input class="form-control" rows="5"  id="comment-post" placeholder="Comment here">
+            <div class="main_content">
+                <div class="right-action col-sm-10">
+                    <div class="right-action-header">
+                        <a class="btn btn-warning" href="index.php?logout='1'" role="button">Logout</a>
+
+                    </div>
+                    <div class="right-action-banner d-flex justify-content-between">
+                        <div class="banner-date-picker row">
+                            <div class="start-date date d-flex justify-content-around">
+                                <span>12/04/2020</span>
+                                <i class="fa fa-calendar-alt"></i>
+                            </div>
+                            <div class="end-date date d-flex justify-content-around">
+                                <span>Now</span>
+                                <i class="fa fa-calendar-alt"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-            <hr>
-        </div>
 
-        <div class="container-fluid" style="background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="image-post text-center">
-                        <img src="https://dummyimage.com/0x0/3d3d3d/fff" class="img-fluid" alt="Responsive image">
+                    <div class="right-content-bar">
+                        <canvas id="myChart4"></canvas>
                     </div>
-                    <div class="content-post" style="margin-top: 10px">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nihil hic delectus excepturi ipsam
-                            reprehenderit iusto rem, quam, repellendus accusantium culpa reiciendis sit dolorum aut aperiam a
-                            architecto. Fuga, sit.</p>
-                        <p>4/10/2020 - 3:40</p>
-                    </div>
-                </div>
 
-            </div>
-            <hr>
-            <div class="row">
-                <form action="">
-                    <div class="col-sm-10">
-                        <div class="form-group" style="margin-top: 10px">
-                            <input class="form-control" rows="5"  id="comment-post" placeholder="Comment here">
+                    <div class="right-statistical d-flex">
+                        <div class="assigned-student">
+                            <div class="all-assigned d-flex justify-content-around">
+                                <span id="object">All Assigned Students</span>
+                                <span id="number"><?php echo $rowSelectTutor['total_assigned_student'] - 1?></span>
+                            </div>
+                            <div class="assigned-student-result d-flex justify-content-around">
+                                <span id="object">Being Assigned to Students</span>
+                                <span id="number"><?php echo $numberOfStudent?></span>
+                            </div>
+                        </div>
+                        <div class="assigned-student">
+                            <div class="all-assigned d-flex justify-content-around">
+                                <span id="object">Total Messages</span>
+                                <?php
+                                    $querySelectTotalMessages = "SELECT * FROM messages WHERE from_userID LIKE '%{$userID}'";
+                                    $resultsSelectTotalMessages = mysqli_query($db, $querySelectTotalMessages);
+                                    $totalMessages = mysqli_num_rows($resultsSelectTotalMessages);
+                                ?>
+                                <span id="number"><?php echo $totalMessages?></span>
+                            </div>
+                            <div class="assigned-student-result d-flex justify-content-around">
+                                <span id="object">Total Comments</span>
+                                <?php
+                                    $querySelectTotalComments = "SELECT * FROM comments WHERE userID LIKE '%{$userID}'";
+                                    $resultsSelectTotalComments = mysqli_query($db, $querySelectTotalComments);
+                                    $totalComments = mysqli_num_rows($resultsSelectTotalComments);
+                                ?>
+                                <span id="number"><?php echo $totalComments?></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+                    <?php
+                        $arrayLatestSevenDays = array();
+                        for ($i = 6; $i >= 0; $i--){
+                            $stringDayAgo = '-' . $i . ' days';
+                            $lastWeek = date("Y/m/d", strtotime($stringDayAgo));
+                            array_push($arrayLatestSevenDays, $lastWeek);
+                        }
+
+
+                    ?>
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">STUDENT EMAIL</th>
+                            <th scope="col">NUMBER OF MESSAGES</th>
+                            <th scope="col">COMMENT(S) ON POSTS</th>
+                            <th scope="col">MEETING SCHEDULED</th>
+                            <th scope="col">STATUS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            <?php
+                                 mysqli_data_seek($resultsSelectStudentTutor, 0);
+                                while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
+                                    $querySelectNumberOfMessages = "SELECT * FROM messages WHERE from_userID = '{$userID}' AND to_userID = '{$rowSelectStudentTutor['userID']}'";
+                                    $resultsSelectNumberOfMessages = mysqli_query($db, $querySelectNumberOfMessages);
+                                    $numberOfMessagesWithStudent = mysqli_num_rows($resultsSelectNumberOfMessages);
+
+                                    $querySelectNumberOfComments = "SELECT content_comment FROM comments INNER JOIN posts ON comments.postID = posts.postID WHERE comments.userID = '{$userID}' AND posts.userID = '{$rowSelectStudentTutor['userID']}'";
+                                    $resultsSelectNumberOfComments = mysqli_query($db, $querySelectNumberOfComments);
+
+                                    $numberOfCommentStudent = mysqli_num_rows($resultsSelectNumberOfComments);
+                                    echo "
+                                        <tr>
+                                            <td>{$rowSelectStudentTutor['email']}</td>
+                                            <td>{$numberOfMessagesWithStudent}</td>
+                                            <td>{$numberOfCommentStudent}</td>
+                                            <td>1-5</td>
+                                            <td>Teaching</td>
+                                        </tr>
+                                        ";
+                                }
+
+                            ?>
+
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <hr>
-
-            <hr>
-            <div class="row">
-
-                <div class="col-md-2 text-center">
-                    <div style="background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto">
-
-                    </div>
-                </div>
-                <div class="col-md-10">
-                    <h1>cuong@cuong</h1>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-                    <p>4/10/2020 - 3:40</p>
-
-                    <div style="background-color: #1b1e21; height: 1px; width: 100%"></div>
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-2 text-center">
-                    <div style="background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto">
-
-                    </div>
-                </div>
-                <div class="col-md-10">
-                    <h1>cuong@cuong</h1>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-                    <p>4/10/2020 - 3:40</p>
-                    <div style="background-color: #1b1e21; height: 1px; width: 100%"></div>
-                </div>
-
-            </div>
-
         </div>
-
     </div>
-
+</div>
 
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            $(this).toggleClass('active');
-        });
-        $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+
+
+<script>
+
+    function openRightMenu() {
+        document.getElementById("rightMenu1").style.display = "block";
+    }
+
+    function closeRightMenu() {
+        document.getElementById("rightMenu1").style.display = "none";
+    }
+
+    let ctx = document.getElementById("myChart4").getContext('2d');
+    ctx.canvas.parentNode.style.height = '50vh';
+    ctx.canvas.parentNode.style.width = '79rem';
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [<?php
+                    $sevenDayString = "";
+                    foreach($arrayLatestSevenDays as $value){
+                        $sevenDayString .= '"' . $value . '"' . ",";
+                    }
+                    $sevenDayString = rtrim($sevenDayString, ",");
+                    echo $sevenDayString;
+                ?>],
+            datasets: [{
+                label: "Tutor's Messages",
+                backgroundColor: "#caf270",
+                stack: "0",
+                data: [<?php
+                        $dataTutorMessages = "";
+                        foreach($arrayLatestSevenDays as $value){
+                            $querySelectMessageEachDay = "SELECT * FROM messages WHERE from_userID = '{$GLOBALS['userID']}' AND time_created LIKE '$value%'";
+                            $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                            $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                            $dataTutorMessages .= '"' . $numberOfMessageEachDay . '"' . ",";
+                        }
+                        $dataTutorMessages = rtrim($dataTutorMessages, ",");
+                        echo $dataTutorMessages;
+                    ?>],
+            }, {
+                label: "Students' Messages",
+                backgroundColor: "#45c490",
+                stack: "0",
+                data: [<?php
+                        $dataStudentMessages = "";
+                        foreach($arrayLatestSevenDays as $value){
+                            $querySelectMessageEachDay = "SELECT * FROM messages WHERE to_userID = '{$GLOBALS['userID']}' AND time_created LIKE '$value%'";
+                            $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                            $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                            $dataStudentMessages .= '"' . $numberOfMessageEachDay . '"' . ",";
+                        }
+                        $dataStudentMessages = rtrim($dataStudentMessages, ",");
+                        echo $dataStudentMessages;
+                    ?>],
+            }, {
+                label: "Tutor's Comments",
+                backgroundColor: "#008d93",
+                stack: "1",
+                data: [<?php
+                        $dataTutorComment = "";
+                        foreach($arrayLatestSevenDays as $value){
+                            $dateConverter = str_replace("/","-",$value);
+                            $querySelectMessageEachDay = "SELECT * FROM comments WHERE userID = '{$GLOBALS['userID']}' AND time_created LIKE '$dateConverter%'";
+                            //echo $querySelectMessageEachDay;
+                            $resultsSelectMessageEachDay = mysqli_query($db, $querySelectMessageEachDay);
+                            $numberOfMessageEachDay = mysqli_num_rows($resultsSelectMessageEachDay);
+
+                            $dataTutorComment .= '"' . $numberOfMessageEachDay . '"' . ",";
+                        }
+                        $dataTutorComment = rtrim($dataTutorComment, ",");
+                        echo $dataTutorComment;
+                    ?>],
+            }],
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Number of messages',
+                fontSize: 25
+            },
+            tooltips: {
+                displayColors: true,
+                callbacks: {
+                    mode: 'x',
+                },
+            },
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                    gridLines: {
+                        display: true,
+                    }
+                }],
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true,
+                    }
+                }]
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: { position: 'bottom' },
+        }
     });
 </script>
 
-<?php include('footer.php') ?>
+</body>
 
+</html>
+
+
+
+
+<?php include('footer.php') ?>
