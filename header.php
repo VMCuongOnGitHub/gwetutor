@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-        <script src="https://kit.fontawesome.com/96bd6ee534.js" crossorigin="anonymous"></script>
+<!--        <script src="https://kit.fontawesome.com/96bd6ee534.js" crossorigin="anonymous"></script>-->
 
         <link rel="stylesheet" type="text/css" href="css/sidebar.css">
 <!--        <link rel="stylesheet" type="text/css" href="css/style.css">-->

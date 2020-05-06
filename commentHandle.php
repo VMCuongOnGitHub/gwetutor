@@ -80,7 +80,7 @@
     ?>
 
     <?php
-    $querySelectFromComment = "SELECT * FROM comments INNER JOIN users ON comments.userID = users.userID  WHERE postID = '{$postIDComment}' ORDER BY time_created";
+    $querySelectFromComment = "SELECT * FROM comments INNER JOIN users ON comments.userID = users.userID  WHERE postID = '{$postIDComment}' ORDER BY time_created ASC ";
     $resultsSelectFromComment = mysqli_query($db, $querySelectFromComment);
     $numberOfComment = mysqli_num_rows($resultsSelectFromComment);
 
@@ -94,27 +94,24 @@
                 <hr>
                 <div class='row'>
                     <div class='col-md-2 text-center'>
-                        <div style='background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto'>
-                        </div>
                     </div>
                     <div class='col-md-10'>
-                        <h1>{$rowSelectFromComment['username']}</h1>";
-        if ($numberOfImageComment > 0) {
-            $rowSelectImageFromComment = mysqli_fetch_assoc($resultsSelectImageFromComment);
-            $image_name_comment = $rowSelectImageFromComment['image_name'];
-            echo "<div class='image-post text-center'>
-                    <img src='images/{$image_name_comment}' class='img-fluid' alt='Responsive image'>
-                </div>";
-        }
+                        <h4>{$rowSelectFromComment['username']}</h4>";
+                        if ($numberOfImageComment > 0) {
+                            $rowSelectImageFromComment = mysqli_fetch_assoc($resultsSelectImageFromComment);
+                            $image_name_comment = $rowSelectImageFromComment['image_name'];
+                            echo "<div class='image-post text-center'>
+                                    <img src='images/{$image_name_comment}' class='img-fluid' alt='Responsive image'>
+                                </div>";
+                        }
 
-        echo "
+                    echo "
                             <p>{$rowSelectFromComment['content_comment']}</p>
                             <p>{$rowSelectFromComment['time_created']}</p>
-        
                             <div style='background-color: #1b1e21; height: 1px; width: 100%'></div>
                         </div>
                     </div>
-                ";
+                    ";
     }
     ?>
 

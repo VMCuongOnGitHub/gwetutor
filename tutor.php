@@ -30,41 +30,40 @@
 <?php include('header.php') ?>
 
 <body>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="wrapper">
-
-            <div class="sidebar">
-                <div class="infor-user d-flex justify-content-around">
-                    <div class="detail">
-                        <?php
-                            $querySelectTutor = "SELECT * FROM tutors WHERE userID = '{$userID}'";
-                            $resultsSelectTutor = mysqli_query($db, $querySelectTutor);
-                            $rowSelectTutor = mysqli_fetch_assoc($resultsSelectTutor);
-
-
-                            $querySelectStudentTutor = "SELECT users.userID, users.username, users.email FROM students INNER JOIN users ON users.userID = students.userID WHERE tutorID = '{$rowSelectTutor['tutorID']}'";
-                            $resultsSelectStudentTutor = mysqli_query($db, $querySelectStudentTutor);
-
-                            $querySelectTutorInfor = "SELECT * FROM users WHERE userID = '{$userID}'";
-                            $resultsSelectTutorInfor = mysqli_query($db, $querySelectTutorInfor);
-                            $rowSelectTutorInfor = mysqli_fetch_assoc($resultsSelectTutorInfor);
+<!----------------------------------------------------->
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <?php
+                    $querySelectTutor = "SELECT * FROM tutors WHERE userID = '{$userID}'";
+                    $resultsSelectTutor = mysqli_query($db, $querySelectTutor);
+                    $rowSelectTutor = mysqli_fetch_assoc($resultsSelectTutor);
 
 
-                            $numberOfStudent = mysqli_num_rows($resultsSelectStudentTutor);
-                            if (isset($_GET['id']) == false){
+                    $querySelectStudentTutor = "SELECT users.userID, users.username, users.email FROM students INNER JOIN users ON users.userID = students.userID WHERE tutorID = '{$rowSelectTutor['tutorID']}'";
+                    $resultsSelectStudentTutor = mysqli_query($db, $querySelectStudentTutor);
 
-                                echo "
-                                <span>{$rowSelectTutorInfor['username']}</span><br>
-                                <span>{$rowSelectTutorInfor['email']}</span>
+                    $querySelectTutorInfor = "SELECT * FROM users WHERE userID = '{$userID}'";
+                    $resultsSelectTutorInfor = mysqli_query($db, $querySelectTutorInfor);
+                    $rowSelectTutorInfor = mysqli_fetch_assoc($resultsSelectTutorInfor);
+
+
+                    $numberOfStudent = mysqli_num_rows($resultsSelectStudentTutor);
+                    if (isset($_GET['id']) == false){
+
+                        echo "
+                                <h3>{$rowSelectTutorInfor['username']}</h3>
+                                <span>{$rowSelectTutorInfor['email']}</span><br>
                                 <span>is assign to </span>
                                 <span>{$numberOfStudent} students</span>
                                 
                             ";
-                            }else{
-                                echo "
-                                    <span>{$rowSelectTutorInfor['username']}</span><br>
+                    }else{
+                        echo "
+                                    <h3>{$rowSelectTutorInfor['username']}</h3>
                                     <span>{$rowSelectTutorInfor['email']}</span>
                                     <br>
                                     <span>is assigned to </span>
@@ -73,74 +72,85 @@
                                     <br>
                                     <a class='btn btn-primary' href='staff/staffDashboard.php' role='button'>Back</a>
                                 ";
-                                
-                            }
-                        ?>
 
-                    </div>
+                    }
+                    ?>
                 </div>
-                <div class="assigned">
-                    <ul>
-                        <?php
-                            if (isset($_GET['id']) == false){
+            </nav>
+        </div>
+        <div class="list-group list-group-flush">
+            <?php
+            if (isset($_GET['id']) == false){
 
-                                while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
-                                    $today = date('Y-m-d H:i');
-                                    $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
-                                    $resultSchedule = mysqli_query($db, $querySchedule);
-                                    $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
-                                    $stringDate = $rowSelectSchedule['time_schedule'];
-                                    $date = date_create($stringDate);
-                                    $scheduleDate = date_format($date,"Y-m-d H:i");
+                while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
+                    $today = date('Y-m-d H:i');
+                    $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
+                    $resultSchedule = mysqli_query($db, $querySchedule);
+                    $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
+                    $stringDate = $rowSelectSchedule['time_schedule'];
+                    $date = date_create($stringDate);
+                    $scheduleDate = date_format($date,"Y-m-d H:i");
 
-                                    $date1 = new DateTime(strval($today));
-                                    $date2 = new DateTime(strval($scheduleDate));
-                                    $interval = $date2->diff($date1);
-
-
-
-                                    $remainingTime = '';
-                                    $scheduleDatePrint = '';
-                                    if (intval($interval->d) != 0){
-                                        $remainingTime .= $interval->d." days ";
-                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
-                                    }
-                                    if (intval($interval->h) != 0){
-                                        $remainingTime .= $interval->h." hours ";
-                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
-                                    }
-                                    //echo $remainingTime;
-
-                                    echo "<li>
-                                        <a href='student.php?id={$rowSelectStudentTutor['userID']}'>
-                                            <div class='user d-flex'>
-                                                <div class='student'>
-                                                    <span>{$rowSelectStudentTutor['username']}</span><br>
-                                                    <span>{$rowSelectStudentTutor['email']}</span><br>
-                                                    <span>{$scheduleDatePrint}</span><br>
-                                                    <span>{$remainingTime}</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>";
-                                }
-                            }
+                    $date1 = new DateTime(strval($today));
+                    $date2 = new DateTime(strval($scheduleDate));
+                    $interval = $date2->diff($date1);
 
 
-                        ?>
+
+                    $remainingTime = '';
+                    $scheduleDatePrint = '';
+                    if (intval($interval->d) != 0){
+                        $remainingTime .= $interval->d." days ";
+                        $scheduleDatePrint = "Has schedule on <br>" . date_format($date,"d/m/Y H:i");
+                    }
+                    if (intval($interval->h) != 0){
+                        $remainingTime .= $interval->h." hours ";
+                        $scheduleDatePrint = "Has schedule on <br>" . date_format($date,"d/m/Y H:i");
+                    }
+                    //echo $remainingTime;
+
+                    echo "
+                            <a class='list-group-item list-group-item-action bg-light' href='student.php?id={$rowSelectStudentTutor['userID']}'>
+                                <div class='user d-flex'>
+                                    <div class='student'>
+                                        <span style='color: #1b1e21'>{$rowSelectStudentTutor['username']}</span><br>
+                                        <span style='color: #1b1e21'>{$rowSelectStudentTutor['email']}</span><br>
+                                        <span style='color: #1b1e21'>{$scheduleDatePrint}</span><br>
+                                        <span style='color: #1b1e21'>{$remainingTime}</span>
+                                    </div>
+                                </div>
+                            </a>";
+                }
+            }
 
 
-                    </ul>
-                </div>
+            ?>
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="btn btn-primary" id="menu-toggle">Hide</button>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a href="index.php?logout='1'" class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
             </div>
+        </nav>
 
-
-            <div class="main_content">
-                <div class="right-action col-sm-10">
-                    <div class="right-action-header">
-                        <a class="btn btn-warning" href="index.php?logout='1'" role="button">Logout</a>
-
-                    </div>
+        <div class="container">
+            <div class="row" style="height:600px">
+                <div class="col-md-12">
                     <div class="right-action-banner d-flex justify-content-between">
                         <div class="banner-date-picker row">
                             <div class="start-date date d-flex justify-content-around">
@@ -153,101 +163,108 @@
                             </div>
                         </div>
                     </div>
+                    <canvas id="myChart4"></canvas>
+                </div>
+            </div>
+        </div>
 
-                    <div class="right-content-bar">
-                        <canvas id="myChart4"></canvas>
-                    </div>
-
-                    <div class="right-statistical d-flex">
-                        <div class="assigned-student">
-                            <div class="all-assigned d-flex justify-content-around">
-                                <span id="object">All Assigned Students</span>
-                                <span id="number"><?php echo $rowSelectTutor['total_assigned_student'] - 1?></span>
-                            </div>
-                            <div class="assigned-student-result d-flex justify-content-around">
-                                <span id="object">Being Assigned to Students</span>
-                                <span id="number"><?php echo $numberOfStudent?></span>
-                            </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="card" style="width: 100%">
+                        <div class="card-body">
+                            <h2 class="card-title"><?php echo $rowSelectTutor['total_assigned_student'] - 1?></h2>
+                            <span>All Assigned Students</span>
                         </div>
-                        <div class="assigned-student">
-                            <div class="all-assigned d-flex justify-content-around">
-                                <span id="object">Total Messages</span>
-                                <?php
-                                    $querySelectTotalMessages = "SELECT * FROM messages WHERE from_userID LIKE '%{$userID}'";
-                                    $resultsSelectTotalMessages = mysqli_query($db, $querySelectTotalMessages);
-                                    $totalMessages = mysqli_num_rows($resultsSelectTotalMessages);
-                                ?>
-                                <span id="number"><?php echo $totalMessages?></span>
-                            </div>
-                            <div class="assigned-student-result d-flex justify-content-around">
-                                <span id="object">Total Comments</span>
-                                <?php
-                                    $querySelectTotalComments = "SELECT * FROM comments WHERE userID LIKE '%{$userID}'";
-                                    $resultsSelectTotalComments = mysqli_query($db, $querySelectTotalComments);
-                                    $totalComments = mysqli_num_rows($resultsSelectTotalComments);
-                                ?>
-                                <span id="number"><?php echo $totalComments?></span>
-                            </div>
+                        <div class="card-body">
+                            <h2 class="card-title"><?php echo $numberOfStudent?></h2>
+                            <span>Being Assigned to Students</span>
                         </div>
                     </div>
-                    <?php
-                        $arrayLatestSevenDays = array();
-                        for ($i = 6; $i >= 0; $i--){
-                            $stringDayAgo = '-' . $i . ' days';
-                            $lastWeek = date("Y/m/d", strtotime($stringDayAgo));
-                            array_push($arrayLatestSevenDays, $lastWeek);
-                        }
-
-
-                    ?>
-                    <table class="table">
-                        <thead class="thead-light">
-                        <tr>
-                            <th scope="col">STUDENT EMAIL</th>
-                            <th scope="col">NUMBER OF MESSAGES</th>
-                            <th scope="col">COMMENT(S) ON POSTS</th>
-                            <th scope="col">MEETING SCHEDULED</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="card" style="width: 100%">
+                        <div class="card-body">
                             <?php
-                                 mysqli_data_seek($resultsSelectStudentTutor, 0);
-                                while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
-                                    $querySelectNumberOfMessages = "SELECT * FROM messages WHERE from_userID = '{$userID}' AND to_userID = '{$rowSelectStudentTutor['userID']}'";
-                                    $resultsSelectNumberOfMessages = mysqli_query($db, $querySelectNumberOfMessages);
-                                    $numberOfMessagesWithStudent = mysqli_num_rows($resultsSelectNumberOfMessages);
+                            $querySelectTotalMessages = "SELECT * FROM messages WHERE from_userID LIKE '%{$userID}'";
+                            $resultsSelectTotalMessages = mysqli_query($db, $querySelectTotalMessages);
+                            $totalMessages = mysqli_num_rows($resultsSelectTotalMessages);
+                            ?>
+                            <h2><?php echo $totalMessages?></h2>
+                            <span>Total Messages</span>
+                        </div>
+                        <div class="card-body">
+                            <?php
+                            $querySelectTotalComments = "SELECT * FROM comments WHERE userID LIKE '%{$userID}'";
+                            $resultsSelectTotalComments = mysqli_query($db, $querySelectTotalComments);
+                            $totalComments = mysqli_num_rows($resultsSelectTotalComments);
+                            ?>
+                            <h2><?php echo $totalComments?></h2>
+                            <span>Total Comments</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                    $querySelectNumberOfComments = "SELECT content_comment FROM comments INNER JOIN posts ON comments.postID = posts.postID WHERE comments.userID = '{$userID}' AND posts.userID = '{$rowSelectStudentTutor['userID']}'";
-                                    $resultsSelectNumberOfComments = mysqli_query($db, $querySelectNumberOfComments);
-
-                                    $numberOfCommentStudent = mysqli_num_rows($resultsSelectNumberOfComments);
-
-                                    $today = date('Y-m-d H:i');
-                                    $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
-                                    $resultSchedule = mysqli_query($db, $querySchedule);
-                                    $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
-                                    $stringDate = $rowSelectSchedule['time_schedule'];
-                                    $date = date_create($stringDate);
-                                    $scheduleDate = date_format($date,"Y-m-d H:i");
-
-                                    $date1 = new DateTime(strval($today));
-                                    $date2 = new DateTime(strval($scheduleDate));
-                                    $interval = $date2->diff($date1);
+            <div class="row">
+                <?php
+                $arrayLatestSevenDays = array();
+                for ($i = 6; $i >= 0; $i--){
+                    $stringDayAgo = '-' . $i . ' days';
+                    $lastWeek = date("Y/m/d", strtotime($stringDayAgo));
+                    array_push($arrayLatestSevenDays, $lastWeek);
+                }
 
 
+                ?>
+                <table class="table">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">STUDENT EMAIL</th>
+                        <th scope="col">NUMBER OF MESSAGES</th>
+                        <th scope="col">COMMENT(S) ON POSTS</th>
+                        <th scope="col">MEETING SCHEDULED</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                                    $remainingTime = '';
-                                    $scheduleDatePrint = '';
-                                    if (intval($interval->d) != 0){
-                                        $remainingTime .= $interval->d." days ";
-                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
-                                    }
-                                    if (intval($interval->h) != 0){
-                                        $remainingTime .= $interval->h." hours ";
-                                        $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
-                                    }
-                                    echo "
+                    <?php
+                    mysqli_data_seek($resultsSelectStudentTutor, 0);
+                    while($rowSelectStudentTutor = mysqli_fetch_assoc($resultsSelectStudentTutor)) {
+                        $querySelectNumberOfMessages = "SELECT * FROM messages WHERE from_userID = '{$userID}' AND to_userID = '{$rowSelectStudentTutor['userID']}'";
+                        $resultsSelectNumberOfMessages = mysqli_query($db, $querySelectNumberOfMessages);
+                        $numberOfMessagesWithStudent = mysqli_num_rows($resultsSelectNumberOfMessages);
+
+                        $querySelectNumberOfComments = "SELECT content_comment FROM comments INNER JOIN posts ON comments.postID = posts.postID WHERE comments.userID = '{$userID}' AND posts.userID = '{$rowSelectStudentTutor['userID']}'";
+                        $resultsSelectNumberOfComments = mysqli_query($db, $querySelectNumberOfComments);
+
+                        $numberOfCommentStudent = mysqli_num_rows($resultsSelectNumberOfComments);
+
+                        $today = date('Y-m-d H:i');
+                        $querySchedule = "SELECT * FROM schedules WHERE userID = '{$rowSelectStudentTutor['userID']}'";
+                        $resultSchedule = mysqli_query($db, $querySchedule);
+                        $rowSelectSchedule = mysqli_fetch_assoc($resultSchedule);
+                        $stringDate = $rowSelectSchedule['time_schedule'];
+                        $date = date_create($stringDate);
+                        $scheduleDate = date_format($date,"Y-m-d H:i");
+
+                        $date1 = new DateTime(strval($today));
+                        $date2 = new DateTime(strval($scheduleDate));
+                        $interval = $date2->diff($date1);
+
+
+
+                        $remainingTime = '';
+                        $scheduleDatePrint = '';
+                        if (intval($interval->d) != 0){
+                            $remainingTime .= $interval->d." days ";
+                            $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                        }
+                        if (intval($interval->h) != 0){
+                            $remainingTime .= $interval->h." hours ";
+                            $scheduleDatePrint = "Has schedule on " . date_format($date,"d/m/Y H:i");
+                        }
+                        echo "
                                         <tr>
                                             <td>{$rowSelectStudentTutor['email']}</td>
                                             <td>{$numberOfMessagesWithStudent}</td>
@@ -255,23 +272,28 @@
                                             <td>{$scheduleDatePrint} - {$remainingTime}</td>
                                         </tr>
                                         ";
-                                }
+                    }
 
-                            ?>
+                    ?>
 
 
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
+    <!-- /#page-content-wrapper -->
 
 </div>
+<!-- /#wrapper -->
 
 
-
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
 <script>
 
     function openRightMenu() {

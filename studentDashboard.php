@@ -107,18 +107,18 @@ if (isset($_GET['logout'])) {
 
                                     $numberOfMessages = $numberOfMessageStudentWithTutor + $numberOfMessageTutorWithStudent;
                                     echo "
-                                    <div class='with-tutor d-flex flex-column'>
-                                        <span>{$numberOfMessageStudentWithTutor}</span>
-                                        <span>{$rowSelectStudentInfor['username']}</span>
-                                    </div>
-                                    <div class='with-tutor d-flex flex-column'>
-                                        <span>$numberOfMessages</span>
-                                        <span>Total Messages Exchanged</span>
-                                    </div>
-                                    <div class='with-tutor d-flex flex-column'>
-                                        <span>{$numberOfMessageTutorWithStudent}</span>
-                                        <span>Tutor</span>
-                                    </div>
+                                        <div class='with-tutor d-flex flex-column'>
+                                            <span>{$numberOfMessageStudentWithTutor}</span>
+                                            <span>{$rowSelectStudentInfor['username']}</span>
+                                        </div>
+                                        <div class='with-tutor d-flex flex-column'>
+                                            <span>$numberOfMessages</span>
+                                            <span>Total Messages Exchanged</span>
+                                        </div>
+                                        <div class='with-tutor d-flex flex-column'>
+                                            <span>{$numberOfMessageTutorWithStudent}</span>
+                                            <span>Tutor</span>
+                                        </div>
                                     ";
                                     ?>
 
@@ -251,8 +251,6 @@ if (isset($_GET['logout'])) {
                                     ?>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

@@ -28,7 +28,7 @@
     <div class="modal" id="myModal1">
         <div class="modal-dialog">
             <div class="modal-content">
-
+<!--                <a class="btn btn-warning" href="index.php?logout='1'" role="button">Logout</a>-->
             </div>
         </div>
     </div>
@@ -46,6 +46,7 @@
             <div class="main_content">
                 <div class="right-action col-sm-10">
                     <div class="right-action-header">
+                        <a class="btn btn-warning" href="../index.php?logout=1" role="button">Logout</a>
                     </div>
 
                     <nav class="navbar navbar-light bg-light">
@@ -72,7 +73,6 @@
 
                                 while($row = mysqli_fetch_assoc($results)) {
                                     echo "<tr>
-                                        <th scope='row'>1</th>
                                         <td>{$row['email']}</td>
                                         <td>{$row['message_to_staff']}</td>
                                         <td>

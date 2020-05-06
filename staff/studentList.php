@@ -16,42 +16,10 @@
                 <div class="main_content">
                     <div class="right-action col-sm-10">
                         <div class="right-action-header">
+                            <a class="btn btn-warning" href="../index.php?logout=1" role="button">Logout</a>
                         </div>
 
-                        <nav class="navbar navbar-light bg-light">
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu"
-                                        data-toggle="dropdown">
-                                    All Students
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                                    <li><a href="#">Students with Tutor</a></li>
-                                    <li><a href="#">Students without Tutor</a></li>
-                                </ul>
-                            </div>
-                            <div class="activities d-flex">
-                                <span>Last Activity From: </span>
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu"
-                                            data-toggle="dropdown">
-                                        7 Days
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                                        <li><a href="#">1 Day</a></li>
-                                        <li><a href="#">2 Day</a></li>
-                                        <li><a href="#">3 Day</a></li>
-                                        <li><a href="#">4 Day</a></li>
-                                        <li><a href="#">5 Day</a></li>
-                                        <li><a href="#">6 Day</a></li>
-                                        <li><a href="#">7 Day</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <form class="form-inline">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search Tutor">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form>
-                        </nav>
+
 
                         <table class="table">
                             <thead class="thead-light">

@@ -74,7 +74,7 @@
 
 
             echo "
-                <div class='container-fluid' style='background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px'>
+                <div class='container-fluid' style='background-color: #f9f9f9; margin-top: 10px; padding: 20px 10px 20px 10px'>
                     <div class='row'>
                         <div class='col-sm-12'>";
 
@@ -88,7 +88,7 @@
             }
 
             echo "
-                                <div class='content-post' style='margin-top: 10px'>
+                                <div class='content-post' style='margin-top: 10px;margin-left: 30px'>
                                     <p>{$row['content_post']}</p>
                                     <p>{$row['time_created']}</p>
                                 </div>
@@ -96,7 +96,7 @@
                         </div>";
 
             echo "<div class='comment-wrapper_{$row['postID']}'>";
-            $querySelectFromComment = "SELECT * FROM comments INNER JOIN users ON comments.userID = users.userID  WHERE postID = '{$row['postID']}'";
+            $querySelectFromComment = "SELECT * FROM comments INNER JOIN users ON comments.userID = users.userID  WHERE postID = '{$row['postID']}' ORDER BY time_created ASC ";
             $resultsSelectFromComment = mysqli_query($db, $querySelectFromComment);
             $numberOfComment = mysqli_num_rows($resultsSelectFromComment);
 
@@ -109,14 +109,13 @@
 
                 echo "
                 
-                <hr>
+                <hr style='margin: 0px'>
                 <div class='row'>
                     <div class='col-md-2 text-center'>
-                        <div style='background-color: #3f9ae5; height: 100px; width: 100px; margin-left: auto'>
-                        </div>
+                        
                     </div>
                     <div class='col-md-10'>
-                        <h1>{$rowSelectFromComment['username']}</h1>";
+                        <h3 style='margin-bottom: 0px'>{$rowSelectFromComment['username']}</h3>";
                         if ($numberOfImageComment > 0){
                             $rowSelectImageFromComment = mysqli_fetch_assoc($resultsSelectImageFromComment);
                             $image_name_comment = $rowSelectImageFromComment['image_name'];
@@ -127,8 +126,8 @@
 
 
                 echo "
-                            <p>{$rowSelectFromComment['content_comment']}</p>
-                            <p>{$rowSelectFromComment['time_created']}</p>
+                            <p style='margin-bottom: 0px'>{$rowSelectFromComment['content_comment']}</p>
+                            <p style='margin-bottom: 0px'>{$rowSelectFromComment['time_created']}</p>
                             <div style='background-color: #1b1e21; height: 1px; width: 100%'></div>
                         </div>
                     </div>
@@ -140,20 +139,23 @@
             echo "
                 <hr>
                  <div class='row'>
-                    <form id='post_submit_comment_{$row['postID']}' action='commentHandle.php' method='post' enctype='multipart/form-data'>
-                        <div class='col-sm-10'>
-                            <div class='form-group' style='margin-top: 10px'>
-                                <input type='hidden' value='{$row['postID']}' name='postID_comment'>
-                                <input type='hidden' value='{$_SESSION['userID']}' name='userID_comment'>
-                                <input type='hidden' value='{$time_created_comment}' name='time_created_comment'>
-                                <input class='form-control' id='comment-post' placeholder='Comment here' name='comment-content'>
-                                <input class='form-control' type='file' name='imageToUpload' class='file-comment'>
+                    <div class='col-md-2'></div>
+                    <div class='col-md-10'>
+                        <form id='post_submit_comment_{$row['postID']}' action='commentHandle.php' method='post' enctype='multipart/form-data'>
+                            <div class='col-sm-10'>
+                                <div class='form-group' style='margin-top: 10px'>
+                                    <input type='hidden' value='{$row['postID']}' name='postID_comment'>
+                                    <input type='hidden' value='{$_SESSION['userID']}' name='userID_comment'>
+                                    <input type='hidden' value='{$time_created_comment}' name='time_created_comment'>
+                                    <input class='form-control' id='comment-post' placeholder='Comment here' name='comment-content'>
+                                    <input class='form-control' type='file' name='imageToUpload' class='file-comment' style='display: none'>
+                                </div>
                             </div>
-                        </div>
-                        <div class='col-sm-2'>
-                            <button type='submit' class='btn btn-primary' name='post_submit_comment'>Submit</button>
-                        </div>
-                    </form>
+                            <div class='col-sm-2'>
+                                <button type='submit' class='btn btn-primary' name='post_submit_comment'>Comment</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             ";

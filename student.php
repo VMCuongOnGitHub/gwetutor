@@ -39,6 +39,10 @@
     if (isset($_GET['id'])){
         $receiverID = $_GET['id'];
         $_SESSION['studentID'] = $_GET['id'];
+
+        $querySelectStudent = "SELECT * FROM users WHERE userID = '{$receiverID}'";
+        $resultsSelectStudent = mysqli_query($db, $querySelectStudent);
+        $rowSelectStudent = mysqli_fetch_assoc($resultsSelectStudent);
     }else{
 
         $querySelectTutorStudent = "SELECT * FROM students WHERE userID = '{$_SESSION['userID']}'";
@@ -80,41 +84,57 @@
     </div>
 </div>
 
-
-<div class="wrapper">
-    <!-- Sidebar Holder -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>Student</h3>
-            <p> <a href="index.php?logout='1'" style="color: red;">logout</a> </p>
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3><?php
+                            if (isset($_GET['id'])){
+                                echo $rowSelectStudent['username'];
+                            }else{
+                                echo "Student";
+                            }
+                        ?></h3>
+                </div>
+            </nav>
         </div>
-    </nav>
-    <!-- Page Content Holder -->
-    <div id="content">
+        <div class="list-group list-group-flush">
+            <?php
+                if (isset($_GET['id'])){
+                    echo "<a href='tutor.php' class='list-group-item list-group-item-action bg-light'>Back</a>";
+                }
+            ?>
+            
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
 
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button class="w3-button w3-teal w3-xlarge w3-right" onclick="openRightMenu()">&#9776;</button>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="btn btn-primary" id="menu-toggle">Hide</button>
 
-            <div class="container-fluid">
-                <button type="button" id="sidebarCollapse" class="navbar-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-align-justify"></i>
-                </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a href="index.php?logout='1'" class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
             </div>
         </nav>
 
-        <div class="container-fluid"  style="background-color: #1b4b72; padding: 30px 20px 30px 20px">
-
+        <div class="container"  style="background-color: #e9ebee; padding: 30px 20px 30px 20px">
             <?php
-                if(isset($_GET['id']) == false){
-                    $dateToday = date('Y-m-d H:i:s');
-                    echo "
+            if(isset($_GET['id']) == false){
+                $dateToday = date('Y-m-d H:i:s');
+                echo "
                     <ul class='nav nav-tabs' role='tablist'>
                         <li class='nav-item'>
                             <a class='nav-link active' data-toggle='tab' href='#post-form'>Post</a>
@@ -134,7 +154,7 @@
                                     <label for='imageToUpload'>Image</label>
                                     <input class='form-control' type='file' name='imageToUpload' id='file'>
                                 </div>
-                                <button type='submit' name='post_submit' class='btn btn-primary'>Submit</button>
+                                <button type='submit' name='post_submit' class='btn btn-primary'>Post</button>
                             </form>
                         </div>
         
@@ -148,36 +168,40 @@
                                         <input class='form-control' type='datetime-local' value='2020-04-20T13:45:00' id='example-datetime-local-input' name='time-schedule' required>
                                         <label for='description-schedule'>Description</label>
                                         <textarea class='form-control' id='description-schedule' name='description-schedule' required></textarea>
-                                        <button type='submit' class='btn btn-primary' name='schedule_submit'>Submit</button>
+                                        <button type='submit' class='btn btn-primary' name='schedule_submit'>Set Schedule</button>
                                     </div>
-                                    <div class='col-md-4'>
-                                        <label for='title-schedule'>Related Document</label>
-                                        <input class='form-control' type='file'>
-                                        <ul>
-                                            <li>1</li>
-                                            <li>2</li>
-                                            <li>3</li>
-                                        </ul>
-                                    </div>
+                                    
                                 </div>
                             </form>
                         </div>
                     </div>
                     ";
-                }
+            }
             ?>
-            
-            
-            
+            <div id="schedule-wrapper"></div>
+            <div id="posts-wrapper"></div>
         </div>
-
-
-        <div id="schedule-wrapper"></div>
-        <div id="posts-wrapper"></div>
     </div>
-
+    <!-- /#page-content-wrapper -->
 
 </div>
+<!--<div class='col-md-4'>-->
+<!--    <label for='title-schedule'>Related Document</label>-->
+<!--    <input class='form-control' type='file' enctype='multipart/form-data' action='uploadFileRelatedDocument.php'>-->
+<!--    <ul>-->
+<!--        <li>1</li>-->
+<!--        <li>2</li>-->
+<!--        <li>3</li>-->
+<!--    </ul>-->
+<!--</div>-->
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#chat_window_1').hide();

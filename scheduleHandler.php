@@ -64,11 +64,11 @@
         $year = date('Y', $date);
 
         echo "
-            <div class='container-fluid' style='background-color: #1d68a7; margin-top: 10px; padding: 20px 10px 20px 10px'>
+            <div class='container-fluid' style='background-color: #ffffff; margin-top: 10px; padding: 20px 10px 20px 10px'>
                 <div class='row'>
                     <div class='col-sm-2'>
                         <div class='text-center'>
-                            <div style='padding-top: 10px; padding-bottom: 10px; background-color: #1d643b; margin-bottom: 10px'>
+                            <div style='padding-top: 10px; padding-bottom: 10px; background-color: #5f5f5f; margin-bottom: 10px; color: white'>
                                 <h1>{$day}</h1>
                                 <h3>{$month}</h3>
                             </div>
@@ -80,12 +80,7 @@
                     </div>
                     <div class='col-sm-10'>
                         <p>{$rowSelectSchedule['content_schedule']}</p>
-                        <h1>Related Document</h1>
-                        <ul>
-                            <li>something1</li>
-                            <li>something1</li>
-                            <li>something1</li>
-                        </ul>
+                        
                     </div>
                 </div>
             </div>

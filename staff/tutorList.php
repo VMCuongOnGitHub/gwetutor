@@ -16,14 +16,10 @@
                 <div class="main_content">
                     <div class="right-action col-sm-10">
                         <div class="right-action-header">
+                            <a class="btn btn-warning" href="../index.php?logout=1" role="button">Logout</a>
                         </div>
 
-                        <nav class="navbar navbar-light bg-light">
-                            <form class="form-inline">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search Tutor">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form>
-                        </nav>
+
 
                         <table class="table">
                             <thead class="thead-light">

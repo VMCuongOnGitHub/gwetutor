@@ -16,6 +16,7 @@
             <div class="main_content">
                 <div class="right-action col-sm-10">
                     <div class="right-action-header">
+                        <a class="btn btn-warning" href="../index.php?logout=1" role="button">Logout</a>
                     </div>
                     <div class="right-action-banner d-flex justify-content-between">
                         <div class="banner-date-picker row">
@@ -126,10 +127,6 @@
                                     
                                     echo "
                                     <div class='total-left-result'>
-                                        <div class='total-meeting total d-flex justify-content-around'>
-                                            <span id='words'>Number of Meeting</span>
-                                            <span id='number'>256</span>
-                                        </div>
                                         <div class='total-meeting total d-flex justify-content-around'>
                                             <span id='words'>Number of Post</span>
                                             <span id='number'>{$numberOfPosts}</span>
