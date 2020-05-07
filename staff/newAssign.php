@@ -6,7 +6,7 @@
     if (isset($_POST['radioRole'])) {
         $updateUserRoleQuery = "UPDATE users SET is_assigned_role='{$_POST['radioRole']}', is_assigned_role_by='{$_SESSION['username']}' WHERE userID='{$_POST['id']}'";
 
-        echo $updateUserRoleQuery;
+        //echo $updateUserRoleQuery;
         mysqli_query($db, $updateUserRoleQuery);
 
         if ($_POST['radioRole'] == 'tutor'){

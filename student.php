@@ -52,37 +52,36 @@
         $tutorIDForStudent = $rowSelectTutorStudent['tutorID'];
         $receiverID = substr($tutorIDForStudent, 5);
     }
-
 ?>
 
-<a id="toggle-button-chat" style="z-index: 1000"><img src="images/chaticon.png" id="fixedbutton"></a>
+    <a id="toggle-button-chat" style="z-index: 1000"><img src="images/chaticon.png" id="fixedbutton"></a>
 
-<div class="chat-window" id="chat_window_1" style="position:fixed;right:-5px;bottom:10px;z-index: 1000000" >
-    <div class="panel panel-default">
-        <div class="panel-heading top-bar">
-                <h3 class="float-left">Chat</h3>
-                <h6 id="close-chat" class="float-right" style="margin-top: 15px">Close</h6>
-        </div>
-        <div class='panel-body msg_container_base' style= 'height:500px;' id="scroll-messages">
-            <div id="chat-window-wrapper"></div>
-        </div>
+    <div class="chat-window" id="chat_window_1" style="position:fixed;right:-5px;bottom:10px;z-index: 1000000" >
+        <div class="panel panel-default">
+            <div class="panel-heading top-bar">
+                    <h3 class="float-left">Chat</h3>
+                    <h6 id="close-chat" class="float-right" style="margin-top: 15px">Close</h6>
+            </div>
+            <div class='panel-body msg_container_base' style= 'height:500px;' id="scroll-messages">
+                <div id="chat-window-wrapper"></div>
+            </div>
 
-        <div class="panel-footer">
-            <div id="div-form">
-                <form id="message_post" action="messageHandler.php" method="post" style="margin-top: 10px">
-                    <div class="form-row">
-                        <div class="col-8">
-                            <input type="text" name="message-context" id="message-context" class="form-control">
+            <div class="panel-footer">
+                <div id="div-form">
+                    <form id="message_post" action="messageHandler.php" method="post" style="margin-top: 10px">
+                        <div class="form-row">
+                            <div class="col-8">
+                                <input type="text" name="message-context" id="message-context" class="form-control">
+                            </div>
+                            <div class="col-4">
+                                <input type="submit" name="message_post" class="form-control">
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <input type="submit" name="message_post" class="form-control">
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
@@ -132,19 +131,29 @@
 
         <div class="container"  style="background-color: #e9ebee; padding: 30px 20px 30px 20px">
             <?php
-            if(isset($_GET['id']) == false){
-                $dateToday = date('Y-m-d H:i:s');
-                echo "
-                    <ul class='nav nav-tabs' role='tablist'>
-                        <li class='nav-item'>
-                            <a class='nav-link active' data-toggle='tab' href='#post-form'>Post</a>
-                        </li>
-                        <li class='nav-item'>
-                            <a class='nav-link' data-toggle='tab' href='#schedule-form'>Schedule</a>
-                        </li>
-                    </ul>
-                    <div class='tab-content'>
-                        <div id='post-form' class='tab-pane fade show active'><br>
+            $dateToday = date('Y-m-d H:i:s');
+            $dateString = date('Y-m-d');
+            $timeString = date('H:i:s');
+
+            $stringNow = $dateString . "T" . $timeString;
+
+            ?>
+<!--            <div id="schedule-wrapper"></div>-->
+            <ul class='nav nav-tabs' role='tablist'>
+                <li class='nav-item'>
+                    <a class='nav-link active' data-toggle='tab' href='#post-form'>Post</a>
+                </li>
+                <li class='nav-item'>
+                    <a class='nav-link' data-toggle='tab' href='#schedule-form'>Schedule</a>
+                </li>
+            </ul>
+            <div class='tab-content'>
+
+                <div id='post-form' class='tab-pane fade show active'><br>
+                    <?php
+                        if(isset($_GET['id']) == false){
+
+                            echo "
                             <form id='post_submit' action='postHandler.php' method='post' enctype='multipart/form-data'>
                                 <input type='hidden' value='{$senderID}' name='userID'>
                                 <input type='hidden' value='{$dateToday}' name='time_created'>
@@ -156,44 +165,39 @@
                                 </div>
                                 <button type='submit' name='post_submit' class='btn btn-primary'>Post</button>
                             </form>
+                            ";
+                        }
+                    ?>
+                    <div id='posts-wrapper'></div>
+                </div>
+
+                <div id='schedule-form' class='tab-pane fade'><br>
+                    <form id='schedule_submit' action='scheduleHandler.php' method='post' enctype='multipart/form-data'>
+                        <input type='hidden' value='{$senderID}' name='userID'>
+                        <input type='hidden' value='{$dateToday}' name='time_created'>
+                        <div class='form-row'>
+                            <div class='col-md-8'>
+                                <label>Setup Schedule</label>
+                                <div id='listDocuments'></div>
+                                <input class='form-control' type='datetime-local' value='{$stringNow}' id='example-datetime-local-input' name='time-schedule' required>
+                                <label for='description-schedule'>Description</label>
+                                <textarea class='form-control' id='description-schedule' name='description-schedule' required></textarea>
+                                <button type='submit' class='btn btn-primary' name='schedule_submit'>Set Schedule</button>
+                            </div>
                         </div>
-        
-                        <div id='schedule-form' class='tab-pane fade'><br>
-                            <form id='schedule_submit' action='scheduleHandler.php' method='post' enctype='multipart/form-data'>
-                                <input type='hidden' value='{$senderID}' name='userID'>
-                                <input type='hidden' value='{$dateToday}' name='time_created'>
-                                <div class='form-row'>
-                                    <div class='col-md-8'>
-                                        <label>Setup Schedule</label>
-                                        <input class='form-control' type='datetime-local' value='2020-04-20T13:45:00' id='example-datetime-local-input' name='time-schedule' required>
-                                        <label for='description-schedule'>Description</label>
-                                        <textarea class='form-control' id='description-schedule' name='description-schedule' required></textarea>
-                                        <button type='submit' class='btn btn-primary' name='schedule_submit'>Set Schedule</button>
-                                    </div>
-                                    
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    ";
-            }
-            ?>
-            <div id="schedule-wrapper"></div>
-            <div id="posts-wrapper"></div>
+                    </form>
+                    <div id='schedule-wrapper'></div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- /#page-content-wrapper -->
 
 </div>
-<!--<div class='col-md-4'>-->
-<!--    <label for='title-schedule'>Related Document</label>-->
-<!--    <input class='form-control' type='file' enctype='multipart/form-data' action='uploadFileRelatedDocument.php'>-->
-<!--    <ul>-->
-<!--        <li>1</li>-->
-<!--        <li>2</li>-->
-<!--        <li>3</li>-->
-<!--    </ul>-->
-<!--</div>-->
+
+
+
+
 <!-- Menu Toggle Script -->
 <script>
     $("#menu-toggle").click(function(e) {
@@ -253,6 +257,15 @@
                 }
             });
 
+        }
+
+        runajax();
+
+        setInterval(function(){
+            runajax();
+        }, 10000);
+
+        setInterval(function(){
             $.ajax({
                 url: "messageHandler.php",
                 type: "POST",
@@ -263,13 +276,7 @@
                     $("#chat-window-wrapper").html("<p>error</p>");
                 }
             });
-        }
-
-        runajax();
-
-        setInterval(function(){
-            runajax();
-        }, 5000);
+        }, 3000);
 
         $("#schedule_submit").on('submit',(function(e) {
             e.preventDefault();
@@ -338,6 +345,7 @@
             scrollBottom();
             document.getElementById("message-context").value = '';
         }));
+
     });
 </script>
 <script>
@@ -348,7 +356,6 @@
     function closeRightMenu() {
         document.getElementById("rightMenu1").style.display = "none";
     }
-
 </script>
 
 

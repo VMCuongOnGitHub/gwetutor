@@ -149,8 +149,8 @@
         </nav>
 
         <div class="container">
-            <div class="row" style="height:600px">
-                <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12"  style="height:500px">
                     <div class="right-action-banner d-flex justify-content-between">
                         <div class="banner-date-picker row">
                             <div class="start-date date d-flex justify-content-around">
@@ -163,13 +163,16 @@
                             </div>
                         </div>
                     </div>
-                    <canvas id="myChart4"></canvas>
+                    <div class="chart-container" style="position: relative; height:100%;margin: auto;">
+                        <canvas id="myChart4"></canvas>
+                    </div>
+<!--                    <canvas id="myChart4"></canvas>-->
                 </div>
             </div>
         </div>
 
         <div class="container">
-            <div class="row">
+            <div class="row" style="margin-top: 100px">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card" style="width: 100%">
                         <div class="card-body">
@@ -305,8 +308,6 @@
     }
 
     let ctx = document.getElementById("myChart4").getContext('2d');
-    ctx.canvas.parentNode.style.height = '50vh';
-    ctx.canvas.parentNode.style.width = '79rem';
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -373,7 +374,7 @@
         options: {
             title: {
                 display: true,
-                text: 'Number of messages',
+                text: 'Tutor Activities',
                 fontSize: 25
             },
             tooltips: {

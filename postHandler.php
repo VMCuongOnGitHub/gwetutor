@@ -147,7 +147,7 @@
                                     <input type='hidden' value='{$row['postID']}' name='postID_comment'>
                                     <input type='hidden' value='{$_SESSION['userID']}' name='userID_comment'>
                                     <input type='hidden' value='{$time_created_comment}' name='time_created_comment'>
-                                    <input class='form-control' id='comment-post' placeholder='Comment here' name='comment-content'>
+                                    <input class='form-control' id='comment-post' placeholder='Comment here' name='comment-content' required>
                                     <input class='form-control' type='file' name='imageToUpload' class='file-comment' style='display: none'>
                                 </div>
                             </div>

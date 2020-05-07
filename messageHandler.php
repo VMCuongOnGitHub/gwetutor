@@ -37,20 +37,15 @@
 ?>
 
 <?php
-
         $querySelectMessage = "
-         SELECT * FROM messages 
-         WHERE (from_userID = '{$senderID}' 
-         AND to_userID = '{$receiverID}') 
-         OR (from_userID = '{$receiverID}'
-         AND to_userID = '{$senderID}') 
-         ORDER BY time_created ASC
-     ";
-//        echo $querySelectMessage;
-
-
+             SELECT * FROM messages 
+             WHERE (from_userID = '{$senderID}' 
+             AND to_userID = '{$receiverID}') 
+             OR (from_userID = '{$receiverID}'
+             AND to_userID = '{$senderID}') 
+             ORDER BY time_created ASC
+        ";
         $resultsSelectMessage = mysqli_query($db, $querySelectMessage);
-
         while($rowSelectMessage = mysqli_fetch_assoc($resultsSelectMessage)) {
             $querySelectSender = "SELECT * FROM users INNER JOIN messages ON users.userID = messages.from_userID WHERE userID = '{$rowSelectMessage['from_userID']}'";
             $resultsSelectSender = mysqli_query($db, $querySelectSender);
@@ -65,18 +60,16 @@
                 $tutorMessageColor = 'background-color: rgb(241, 240, 240);';
                 $textColor = 'color: #3d3d3d';
             }
+
             echo "
-            <div class='row msg_container base_sent' style=''>
-                <div class='messages msg_sent' style='word-wrap: break-word; {$tutorMessageColor}'>
-                    <p style='{$textColor}'>{$rowSelectMessage['content_message']}</p>
-                    <time datetime='2009-11-13T20:00:00'><strong style='{$textColor}'>{$rowSelectSender['email']}</strong> - {$rowSelectMessage['time_created']}</time>
+                <div class='row msg_container base_sent' style=''>
+                    <div class='messages msg_sent' style='word-wrap: break-word; {$tutorMessageColor}'>
+                        <p style='{$textColor}'>{$rowSelectMessage['content_message']}</p>
+                        <time datetime='2009-11-13T20:00:00'><strong style='{$textColor}'>{$rowSelectSender['email']}</strong> - {$rowSelectMessage['time_created']}</time>
+                    </div>
                 </div>
-            </div>
-        
-        ";
+            ";
         }
-
-
 ?>
 
 
