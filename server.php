@@ -1,4 +1,5 @@
 <?php
+	date_default_timezone_set('Asia/Ho_Chi_Minh');
 	if(!isset($_SESSION))
 	{
 		session_start();

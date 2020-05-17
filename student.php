@@ -114,7 +114,7 @@
     <div id="page-content-wrapper">
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-            <button class="btn btn-primary" id="menu-toggle">Hide</button>
+            <button class="btn btn-primary" id="menu-toggle">Menu</button>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -173,16 +173,17 @@
 
                 <div id='schedule-form' class='tab-pane fade'><br>
                     <form id='schedule_submit' action='scheduleHandler.php' method='post' enctype='multipart/form-data'>
-                        <input type='hidden' value='{$senderID}' name='userID'>
-                        <input type='hidden' value='{$dateToday}' name='time_created'>
+                        <input type='hidden' value='<?php echo $senderID?>' name='userID'>
+                        <input type='hidden' value='<?php echo $dateToday?>' name='time_created'>
                         <div class='form-row'>
-                            <div class='col-md-8'>
+                            <div class='col-md-10'>
                                 <label>Setup Schedule</label>
-                                <div id='listDocuments'></div>
-                                <input class='form-control' type='datetime-local' value='{$stringNow}' id='example-datetime-local-input' name='time-schedule' required>
-                                <label for='description-schedule'>Description</label>
+                                <input class='form-control' type='datetime-local' value='<?php echo $stringNow?>' id='example-datetime-local-input' name='time-schedule' required>
+                                <label for='description-schedule' style="margin-top: 20px">Description</label>
                                 <textarea class='form-control' id='description-schedule' name='description-schedule' required></textarea>
-                                <button type='submit' class='btn btn-primary' name='schedule_submit'>Set Schedule</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button type='submit' class='btn btn-primary' name='schedule_submit' style="margin-top: 30px">Set Schedule</button>
                             </div>
                         </div>
                     </form>
@@ -266,6 +267,7 @@
         }, 10000);
 
         setInterval(function(){
+            let datapost = {"receiverID" : "<?php echo $receiverID?>", "senderID" : "<?php echo $senderID?>"};
             $.ajax({
                 url: "messageHandler.php",
                 type: "POST",

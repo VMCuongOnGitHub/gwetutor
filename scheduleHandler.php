@@ -16,6 +16,7 @@
 
         $query = "INSERT INTO schedules";
         $query .= " VALUES ('{$scheduleID}', '{$userID}', '{$schedule_time}', '{$schedule_content}', '{$time_created}')";
+        echo $query;
         mysqli_query($db, $query);
     }
 ?>
@@ -71,12 +72,21 @@
                                 echo "<li><a href='{$row['url_related_document']}'>{$row['name_related_document']}</a></li>";
                             }
                         echo "</ul>
-                        <form action='uploadFileRelatedDocument.php' method='post' enctype='multipart/form-data' id='uploadfile_{$rowSelectSchedule['scheduleID']}'>
-                          <input type='hidden' name='scheduleID' value='{$rowSelectSchedule['scheduleID']}'>
-                          <input type='hidden' name='time_created' value='{$stringNow}'>
-                          <input type='file' name='fileToUpload' id='fileToUpload'>
-                          <input type='submit' value='Upload File' name='submit' id='uploadfile_{$rowSelectSchedule['scheduleID']}'>
-                        </form>
+                        <div class='custom-file'>
+                            <form action='uploadFileRelatedDocument.php' method='post' enctype='multipart/form-data' id='uploadfile_{$rowSelectSchedule['scheduleID']}'>
+                              <input type='hidden' name='scheduleID' value='{$rowSelectSchedule['scheduleID']}'>
+                              <input type='hidden' name='time_created' value='{$stringNow}'>
+                              <div class='row'>
+                                <div class='col-md-8 custom-file'>  
+                                    <input type='file' id='custom-file-input_{$rowSelectSchedule['scheduleID']}' name='fileToUpload' id='fileToUpload' class='custom-file-input'>
+                                    <label for='fileToUpload' class='custom-file-label'>Choose file</label>
+                                </div>
+                                <div class='col-md-4'>
+                                    <input type='submit' value='Upload File' name='submit' id='uploadfile_{$rowSelectSchedule['scheduleID']}' class='btn btn-primary'>
+                                </div>
+                              </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,6 +95,12 @@
         echo "
             <script type='text/javascript'>
             $(document).ready(function () {
+                $('#custom-file-input_{$rowSelectSchedule['scheduleID']}').on('change', function() {
+                   let fileName = $(this).val().split('\\').pop();
+                   alert('ddd');
+                   $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
+                });
+                
                 $('#uploadfile_{$rowSelectSchedule['scheduleID']}').on('submit',(function(e) {
                     let file_data1 = $('input[name=fileToUpload]').prop('files')[0];
                     let formData1 = new FormData(this);
