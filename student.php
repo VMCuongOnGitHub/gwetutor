@@ -264,7 +264,7 @@
 
         setInterval(function(){
             runajax();
-        }, 10000);
+        }, 100000);
 
         setInterval(function(){
             let datapost = {"receiverID" : "<?php echo $receiverID?>", "senderID" : "<?php echo $senderID?>"};

@@ -66,7 +66,7 @@
 		$password = mysqli_real_escape_string($db, $_POST['password']);
 
 		if (empty($username)) {
-			array_push($errors, "Username is required");
+			array_push($errors, "Email is required");
 		}
 		if (empty($password)) {
 			array_push($errors, "Password is required");
@@ -74,7 +74,7 @@
 
 		if (count($errors) == 0) {
 			$password = md5($password);
-			$query = "SELECT * FROM users WHERE username='$username' AND password='{$password}'";
+			$query = "SELECT * FROM users WHERE email='$username' AND password='{$password}'";
 
 			$results = mysqli_query($db, $query);
 			$row = mysqli_fetch_assoc($results);
@@ -99,7 +99,7 @@
 					}
                 }
 			}else {
-				array_push($errors, "Wrong username/password combination");
+				array_push($errors, "Wrong Email/password combination");
 			}
 		}
 	}

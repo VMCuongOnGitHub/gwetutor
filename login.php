@@ -36,7 +36,7 @@
                         <?php include('errors.php'); ?>
                         <h3 class="text-center text-info">Welcome to GWTutor System</h3>
                         <div class="form-group">
-                            <label for="username" class="text-info">Username:</label><br>
+                            <label for="username" class="text-info">Email:</label><br>
                             <input type="text" name="username" id="username" class="form-control" required>
                         </div>
                         <div class="form-group">

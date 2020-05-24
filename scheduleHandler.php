@@ -16,9 +16,10 @@
 
         $query = "INSERT INTO schedules";
         $query .= " VALUES ('{$scheduleID}', '{$userID}', '{$schedule_time}', '{$schedule_content}', '{$time_created}')";
-        echo $query;
         mysqli_query($db, $query);
     }
+
+
 ?>
 
 <?php
@@ -64,75 +65,71 @@
                     </div>
                     <div class='col-sm-4'>
                         <label for='title-schedule'>Related Document</label>
-                        <ul id='file-list_{$rowSelectSchedule['scheduleID']}'>";
-                            $querySelectFile = "SELECT * FROM relateddocuments WHERE scheduleID = '{$rowSelectSchedule['scheduleID']}'";
-                            $resultSelectFile = mysqli_query($db, $querySelectFile);
-
-                            while($row = mysqli_fetch_assoc($resultSelectFile)){
-                                echo "<li><a href='{$row['url_related_document']}'>{$row['name_related_document']}</a></li>";
-                            }
-                        echo "</ul>
+                        
+                        <ul id='file-list_{$rowSelectSchedule['scheduleID']}'></ul>
+                        
                         <div class='custom-file'>
-                            <form action='uploadFileRelatedDocument.php' method='post' enctype='multipart/form-data' id='uploadfile_{$rowSelectSchedule['scheduleID']}'>
+                            
+                            <script>
+                                $(document).ready(function() {
+                                    $('#uploadfile_{$rowSelectSchedule['scheduleID']}').on('submit',(function(e) {
+                                        let file_data2 = $('#custom-file-input_{$rowSelectSchedule['scheduleID']}').prop('files')[0];
+                                        let formData2 = new FormData(this);
+                                        formData2.append('file', file_data2);
+                                        e.preventDefault();
+                                        $.ajax({
+                                            url: 'uploadFileRelatedDocument.php',
+                                            type: 'POST',
+                                            data:  formData2,
+                                            enctype: 'multipart/form-data',
+                                            contentType: false,
+                                            cache: false,
+                                            processData:false,
+                                            dataType: 'text',
+                                            success: function(data){
+                                                $('#file-list_{$rowSelectSchedule['scheduleID']}').html(data);
+                                            }, error: function() {
+                                                $('#file-list_{$rowSelectSchedule['scheduleID']}').html('<p></p>');
+                                            }
+                                        });
+                                    }));
+                                let datapost = {'scheduleID' : '{$rowSelectSchedule['scheduleID']}'};
+                                 $.ajax({
+                                    url: 'uploadFileRelatedDocument.php',
+                                    type: 'POST',
+                                    data:  datapost,
+                                    success: function(data){
+                                        $('#file-list_{$rowSelectSchedule['scheduleID']}').html(data);
+                                    }, error: function() {
+                                        $('#file-list_{$rowSelectSchedule['scheduleID']}').html('<p></p>');
+                                    }
+                                });
+                            });
+                                
+                            </script>
+                            <form id='uploadfile_{$rowSelectSchedule['scheduleID']}' action='uploadFileRelatedDocument.php' method='post' enctype='multipart/form-data'>
                               <input type='hidden' name='scheduleID' value='{$rowSelectSchedule['scheduleID']}'>
                               <input type='hidden' name='time_created' value='{$stringNow}'>
                               <div class='row'>
                                 <div class='col-md-8 custom-file'>  
-                                    <input type='file' id='custom-file-input_{$rowSelectSchedule['scheduleID']}' name='fileToUpload' id='fileToUpload' class='custom-file-input'>
+                                    <input type='file' name='fileToUpload' class='custom-file-input' id='custom-file-input_{$rowSelectSchedule['scheduleID']}'>
                                     <label for='fileToUpload' class='custom-file-label'>Choose file</label>
                                 </div>
-                                <div class='col-md-4'>
-                                    <input type='submit' value='Upload File' name='submit' id='uploadfile_{$rowSelectSchedule['scheduleID']}' class='btn btn-primary'>
+                                <div class='col-md-4' style='padding-right: 20px'>
+                                    <button type='submit' class='btn btn-primary' name='uploadfile_{$rowSelectSchedule['scheduleID']}'>Upload File</button>
                                 </div>
                               </div>
                             </form>
                         </div>
+                        
                     </div>
                 </div>
-            </div>
-            
-        ";
-        echo "
-            <script type='text/javascript'>
-            $(document).ready(function () {
-                $('#custom-file-input_{$rowSelectSchedule['scheduleID']}').on('change', function() {
-                   let fileName = $(this).val().split('\\').pop();
-                   alert('ddd');
-                   $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
-                });
                 
-                $('#uploadfile_{$rowSelectSchedule['scheduleID']}').on('submit',(function(e) {
-                    let file_data1 = $('input[name=fileToUpload]').prop('files')[0];
-                    let formData1 = new FormData(this);
-                    formData1.append('file', file_data1);
-                    
-                    e.preventDefault();
-                    $.ajax({
-                            url: 'uploadFileRelatedDocument.php',
-                            type: 'POST',
-                            data:  formData1,
-                            enctype: 'multipart/form-data',
-                            contentType: false,
-                            cache: false,
-                            processData:false,
-                            dataType: 'text',
-                            success: function(data){
-                                $('#file-list_{$rowSelectSchedule['scheduleID']}').html(data);
-                            }, error: function() {
-                                $('#file-list_{$rowSelectSchedule['scheduleID']}').html('<p></p>');
-                            }
-                    });
-                    
-                    $('#uploadfile_{$rowSelectSchedule['scheduleID']}').val(null);
-                }));
-             });
-        </script>
+            </div>
         ";
     }
 ?>
 
-<?php
 
-?>
 
 
